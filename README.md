@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/ZKSI/CumFSel.jl.svg?branch=master](https://travis-ci.org/ZKSI/CumFSel.jl)
+#CumFSel.jl
+[![Build Status](https://travis-ci.org/ZKSI/CumFSel.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumFSel.jl)
 
 
 
