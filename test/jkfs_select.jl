@@ -59,11 +59,11 @@ for m=(known_data_size+1):test_number
       println(label)
       samples = sampler(samples_orig)
       Σ_malf = cov(samples)
-      bands2 = cut_order(cumfsel(Σ_malf, n-1))
+      bands2 = cut_order(cumfsel(Σ_malf))
       cum = Array.(cumulants(samples, 4))
-      bands3 = cut_order(cumfsel(cum[2], cum[3], "hosvd", n-1))
-      bands4 = cut_order(cumfsel(cum[2], cum[4], "hosvd", n-1))
-      bands4n = cut_order(cumfsel(cum[2], cum[4], "norm", n-1))
+      bands3 = cut_order(cumfsel(cum[2], cum[3], "hosvd"))
+      bands4 = cut_order(cumfsel(cum[2], cum[4], "hosvd"))
+      bands4n = cut_order(cumfsel(cum[2], cum[4], "norm"))
 
       Dict("cor_$label" => Σ_malf,
            "bands_MEV_$label" => bands2,

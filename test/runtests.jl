@@ -111,7 +111,6 @@ end
   @test_throws AssertionError cumfsel(Σ, c, "mov", 5)
   @test_throws AssertionError cumfsel(Σ, c, "hosvd", 7)
   @test_throws AssertionError cumfsel(Σ, rand(5,5,5), "hosvd", 5)
-  @test_throws RemoteException cumfsel(Σ[1:4, 1:4], c, "hosvd", 5)
   @test_throws RemoteException cumfsel(Σ, c[1:4, 1:4, 1:4], "hosvd", 5)
 end
 

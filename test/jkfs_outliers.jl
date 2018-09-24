@@ -6,12 +6,9 @@ using SymmetricTensors
 using CumFSel
 using JLD2
 using FileIO
-
 @everywhere import CumFSel: reduceband
 @everywhere using DatagenCopulaBased
 @everywhere using CumFSel
-
-#cut_order(x) = (x->x[3]).(x)
 
 ν = parse(ARGS[1])
 println(ν)
@@ -61,20 +58,8 @@ for m=(known_data_size+1):test_number
       println(label)
       samples = sampler(samples_orig)
       Σ_malf = cov(samples)
-      #bands2 = cut_order(greedesearchdata(Σ_malf, MEV, n))
-      #cum = Array.(cumulants(samples, 4))
-      #bands3 = cut_order(greedesearchdata(cum[1:3], JSBS, n))
-      #bands4 = cut_order(greedesearchdata(cum, JKFS, n))
-      #bands34 = cut_order(greedesearchdata(cum, JKSFS, n))
-      #bands4n = cut_order(greedesearchdata(cum, JKN, n))
-
       Dict("cor_$label" => Σ_malf,
-           #"bands_MEV_$label" => bands2,
-           #"bands_JSBS_$label" => bands3,
-           #"bands_JKFS_$label" => bands4,
-           #"bands_JKFS_$label" => bands4,
            "x_$label" => samples)
-           #"bands_JKN_$label" => bands4n)
     end
 
     data["data"]["$m"] = merge(cur_dict, data_dict)

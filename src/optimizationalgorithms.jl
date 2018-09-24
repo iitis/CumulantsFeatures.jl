@@ -106,10 +106,10 @@ end
 function greedesearchdata(Σ::Matrix{T}, c::Array{T, N}, maxfunction::Function, k::Int) where {T <: AbstractFloat, N}
   ls =  [true for i=1:size(Σ,1)]
   result = []
+  k <= size(Σ,1) || throw(AssertionError(" for k = $(k) > size(Σ, 1)"))
   for i = 1:k
     ls, value, j = greedestep(Σ, c, maxfunction, ls)
     push!(result, (ls,value,j))
-    value != -Inf || throw(AssertionError(" for k = $(k) optimisation does not work"))
   end
   result
 end
