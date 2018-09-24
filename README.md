@@ -1,4 +1,4 @@
-
+https://travis-ci.org/ZKSI/CumFSel.jl.svg?branch=master
 
 
 CumFSel.jl provides Cumulants based algorithms used to select features subset or detect an outlier subset that posses higher order cross-correlations. 
