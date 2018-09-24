@@ -1,4 +1,7 @@
-CumFSel,jl provides Cumulants based algorithms used to select features subset or detect an outlier subset that posses higher order cross-correlations. 
+
+
+
+CumFSel.jl provides Cumulants based algorithms used to select features subset or detect an outlier subset that posses higher order cross-correlations. 
 An outlier subset is assumed to be modelled by non-Gausian multivariate distribution in contrary to an ordinary data subset that is assumed to be modelled by a Gaussian multivariate distribution.
 
 As of 24/09/2018 [@kdomino](https://github.com/kdomino) is the lead maintainer of this package.
