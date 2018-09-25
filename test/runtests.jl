@@ -126,7 +126,7 @@ end
 
 addprocs(3)
 @everywhere testf(a,b,bool)= det(a[bool,bool])
-@everywhere using CumFSel
+@everywhere using CumulantsFeatures
 @testset "greedesearch parallel implementation" begin
   g = greedesearchdata(a,b, testf, 3)
   @test g[1][1] == [true, true, false]
