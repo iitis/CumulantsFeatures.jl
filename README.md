@@ -1,4 +1,5 @@
-# CumFSel.jl
+# CumulantsFeatures.jl
+
 [![Build Status](https://travis-ci.org/ZKSI/CumFSel.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumFSel.jl)
 [![Coverage Status](https://coveralls.io/repos/github/ZKSI/CumFSel.jl/badge.svg?branch=master)](https://coveralls.io/github/ZKSI/CumFSel.jl?branch=master)
 
