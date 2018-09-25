@@ -2,7 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/ZKSI/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumulantsFeatures.jl)
-[![Coverage Status](https://coveralls.io/repos/github/ZKSI/CumFSel.jl/badge.svg?branch=master)](https://coveralls.io/github/ZKSI/CumFSel.jl?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/ZKSI/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/ZKSI/CumulantsFeatures.jl?branch=master)
 
 CumFSel.jl provides Cumulants based algorithms used to select features subset or detect an outlier subset that posses higher order cross-correlations. 
 An outlier subset is assumed to be modelled by non-Gausian multivariate distribution in contrary to an ordinary data subset that is assumed to be modelled by a Gaussian multivariate distribution.
