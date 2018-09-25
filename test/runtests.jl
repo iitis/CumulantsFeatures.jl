@@ -3,7 +3,7 @@ using SymmetricTensors
 using Cumulants
 using CumulantsFeatures
 using Combinatorics
-import CumFSel: reduceband, greedestep, unfoldsym, hosvdstep, greedesearchdata, mev, mormbased, hosvdapprox
+import CumulantsFeatures: reduceband, greedestep, unfoldsym, hosvdstep, greedesearchdata, mev, mormbased, hosvdapprox
 
 te = [-0.112639 0.124715 0.124715 0.268717 0.124715 0.268717 0.268717 0.046154]
 st = (reshape(te, (2,2,2)))
