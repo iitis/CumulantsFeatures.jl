@@ -1,7 +1,7 @@
 using Base.Test
 using SymmetricTensors
 using Cumulants
-using CumFSel
+using CumulantsFeatures
 using Combinatorics
 import CumFSel: reduceband, greedestep, unfoldsym, hosvdstep, greedesearchdata, mev, mormbased, hosvdapprox
 

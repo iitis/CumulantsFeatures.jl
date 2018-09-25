@@ -104,7 +104,7 @@ function plotdet(r, rx, j::Int = 3, nu::Int = 5)
   ret, retrx
 end
 
-ν = 10
+ν = 5
 str = "tstudent_$ν-t_size-50_malfsize-10-t_100000_1000.jld2"
 
 r = load("roc"*str)["roc"]

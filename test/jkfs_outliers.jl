@@ -3,7 +3,7 @@ using DatagenCopulaBased
 @everywhere using Distributions
 @everywhere using Cumulants
 using SymmetricTensors
-using CumFSel
+using CumulantsFeatures
 using JLD2
 using FileIO
 @everywhere import CumFSel: reduceband
