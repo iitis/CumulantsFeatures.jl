@@ -7,9 +7,9 @@ using CumulantsFeatures
 using JLD2
 using FileIO
 
-@everywhere import CumFSel: reduceband
+@everywhere import CumulantsFeatures: reduceband
 @everywhere using DatagenCopulaBased
-@everywhere using CumFSel
+@everywhere using CumulantsFeatures
 
 @everywhere cut_order(x) = (x->x[3]).(x)
 
@@ -21,7 +21,7 @@ println(ν)
 @everywhere n = 50
 @everywhere malf_size = 10
 data_dir = "jkfsdata_select"
-test_number = 25
+test_number = 5
 filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$t.jld2"
 
 data = Dict{String, Any}("variables_no" => n,
@@ -61,7 +61,11 @@ for m=(known_data_size+1):test_number
       Σ_malf = cov(samples)
       bands2 = cut_order(cumfsel(Σ_malf))
       cum = Array.(cumulants(samples, 4))
+      bands31 = cut_order(cumfsel(cum[2], cum[3], "hosvd", n-1))
+      a = vcat(bands31, setdiff(collect(1:n), bands31))
       bands3 = cut_order(cumfsel(cum[2], cum[3], "hosvd"))
+      println(a[end-2:end])
+      println(bands3[end-2:end])
       bands4 = cut_order(cumfsel(cum[2], cum[4], "hosvd"))
       bands4n = cut_order(cumfsel(cum[2], cum[4], "norm"))
 

@@ -6,9 +6,9 @@ using SymmetricTensors
 using CumulantsFeatures
 using JLD2
 using FileIO
-@everywhere import CumFSel: reduceband
+@everywhere import CumulantsFeatures: reduceband
 @everywhere using DatagenCopulaBased
-@everywhere using CumFSel
+@everywhere using CumulantsFeatures
 
 ν = parse(ARGS[1])
 println(ν)
