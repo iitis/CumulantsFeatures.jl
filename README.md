@@ -1,6 +1,7 @@
 # CumulantsFeatures.jl
 
-[![Build Status](https://travis-ci.org/ZKSI/CumFSel.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumFSel.jl)
+
+[![Build Status](https://travis-ci.org/ZKSI/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumulantsFeatures.jl)
 [![Coverage Status](https://coveralls.io/repos/github/ZKSI/CumFSel.jl/badge.svg?branch=master)](https://coveralls.io/github/ZKSI/CumFSel.jl?branch=master)
 
 CumFSel.jl provides Cumulants based algorithms used to select features subset or detect an outlier subset that posses higher order cross-correlations. 
