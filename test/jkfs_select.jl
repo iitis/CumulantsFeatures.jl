@@ -1,9 +1,7 @@
 procs_id = addprocs(8)
-using DatagenCopulaBased
 @everywhere using Distributions
 @everywhere using Cumulants
-using SymmetricTensors
-using CumulantsFeatures
+@everywhere using SymmetricTensors
 using JLD2
 using FileIO
 
@@ -21,7 +19,7 @@ println(ν)
 @everywhere n = 50
 @everywhere malf_size = 10
 data_dir = "jkfsdata_select"
-test_number = 5
+test_number = 25
 filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$t.jld2"
 
 data = Dict{String, Any}("variables_no" => n,
@@ -48,7 +46,6 @@ for m=(known_data_size+1):test_number
     Σ = cormatgen_rand(n)
     samples_orig = rand(MvNormal(Σ), t)'
 
-
     versions = [(x->x, "original"),
                 (x->gcop2tstudent(x, malf, ν), "malf")]
 
@@ -58,17 +55,13 @@ for m=(known_data_size+1):test_number
     data_dict = @parallel (merge) for (sampler, label)=versions
       println(label)
       samples = sampler(samples_orig)
-      Σ_malf = cov(samples)
+      Σ_malf = SymmetricTensor(cov(samples))
+      cum = cumulants(samples, 4)
       bands2 = cut_order(cumfsel(Σ_malf))
-      cum = Array.(cumulants(samples, 4))
-      bands31 = cut_order(cumfsel(cum[2], cum[3], "hosvd", n-1))
-      a = vcat(bands31, setdiff(collect(1:n), bands31))
       bands3 = cut_order(cumfsel(cum[2], cum[3], "hosvd"))
-      println(a[end-2:end])
-      println(bands3[end-2:end])
       bands4 = cut_order(cumfsel(cum[2], cum[4], "hosvd"))
-      bands4n = cut_order(cumfsel(cum[2], cum[4], "norm"))
-
+      bands4n = cut_order(cumfsel(cum[2], cum[4], "norm", n-1))
+      bands4n = vcat(bands4n, setdiff(collect(1:n), bands4n))
       Dict("cor_$label" => Σ_malf,
            "bands_MEV_$label" => bands2,
            "bands_JSBS_$label" => bands3,

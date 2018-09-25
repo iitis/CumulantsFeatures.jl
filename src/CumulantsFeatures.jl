@@ -3,6 +3,7 @@ module CumulantsFeatures
   using SymmetricTensors
   using Cumulants
   using StatsBase
+  using CumulantsUpdates
   import SymmetricTensors: issymetric
 
   include("optimizationalgorithms.jl")

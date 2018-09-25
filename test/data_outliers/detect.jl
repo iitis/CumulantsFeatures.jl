@@ -2,15 +2,14 @@
 
 using JLD2
 using FileIO
-using CumFSel
 using ArgParse
 using Distributions
 addprocs(8)
 @everywhere using Cumulants
+@everywhere using CumulantsFeatures
 using SymmetricTensors
 using StatsBase
 using ROCAnalysis
-
 
 
 function detection_hosvd(data::Dict, β::Float64, r::Int = 3)

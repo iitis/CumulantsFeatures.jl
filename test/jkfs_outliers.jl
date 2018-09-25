@@ -47,7 +47,6 @@ for m=(known_data_size+1):test_number
     Σ = cormatgen_rand(n)
     samples_orig = rand(MvNormal(Σ), t)'
 
-
     versions = [(x->x, "original"),
                 (x->vcat(gcop2tstudent(x[1:a, :], malf, ν), x[a+1:end, :]), "malf")]
 

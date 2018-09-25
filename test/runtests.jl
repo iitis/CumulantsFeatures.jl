@@ -3,7 +3,9 @@ using SymmetricTensors
 using Cumulants
 using CumulantsFeatures
 using Combinatorics
+using CumulantsUpdates
 import CumulantsFeatures: reduceband, greedestep, unfoldsym, hosvdstep, greedesearchdata, mev, mormbased, hosvdapprox
+import CumulantsFeatures: updatemoments
 
 te = [-0.112639 0.124715 0.124715 0.268717 0.124715 0.268717 0.268717 0.046154]
 st = (reshape(te, (2,2,2)))
@@ -13,32 +15,33 @@ ar = reshape(collect(1.:27.),(3,3,3))
 @testset "unfoldsym reduce" begin
   @test unfoldsym(st) == reshape(te, (2,4))
   stt = convert(SymmetricTensor, st)
-  @test unfoldsym(stt) == reshape(te, (2,4))
+  @test unfoldsym(stt) == reshape(te, (2,4))*reshape(te, (2,4))'
   @test reduceband(ar, [true, false, false])  ≈ ones(Float64, (1,1,1))
   @test reduceband(ar, [true, true, true])  ≈ ar
 end
 
-a = reshape(collect(1.:9.), 3,3)
-b = reshape(collect(1.: 27.), 3,3,3)
+srand(42)
+a = rand(SymmetricTensor{Float64, 2}, 3)
+b = rand(SymmetricTensor{Float64, 3}, 3)
 testf(a,b,bool)= det(a[bool,bool])
 @testset "optimisation" begin
   @testset "greedestep" begin
-    g = greedestep(a,b, testf, [true, true, true])
-    @test g[1] == [true, true, false]
-    @test g[3] == 3
-    @test g[2] == -3.0
+    g = greedestep(Array(a), Array(b), testf, [true, true, true])
+    @test g[1] == [true, false, true]
+    @test g[3] == 2
+    @test g[2] ≈ 0.48918301293211774
   end
   @testset "greedesearch" begin
     g = greedesearchdata(a,b, testf, 3)
-    @test g[1][1] == [true, true, false]
-    @test g[2][1] == [false, true, false]
+    @test g[1][1] == [true, false, true]
+    @test g[2][1] == [false, false, true]
     @test g[3][1] == [false, false, false]
-    @test g[1][2] == -3.0
-    @test g[2][2] == 5.0
+    @test g[1][2] ≈ 0.48918301293211774
+    @test g[2][2] ≈ 0.9735659798036858
     @test g[3][2] == 1.0
-    @test g[1][3] == 3
+    @test g[1][3] == 2
     @test g[2][3] == 1
-    @test g[3][3] == 2
+    @test g[3][3] == 3
   end
 end
 
@@ -58,30 +61,23 @@ end
   srand(42)
   c3 = rand(SymmetricTensor{Float64, 3}, 5)
   Σ = rand(SymmetricTensor{Float64, 2}, 5)
-  c3 = Array(c3)
-  c3m = unfoldsym(c3)
-  m3 = c3m*c3m'
+  m3 = unfoldsym(c3)
   @test size(m3) == (5,5)
   Σ = Array(Σ)
-  @test hosvdapprox(Σ, c3) ≈ log(det(m3)^(1/2)/det(Σ)^(3/2))
+  @test hosvdapprox(Σ, Array(c3)) ≈ log(det(m3)^(1/2)/det(Σ)^(3/2))
   c4 = rand(SymmetricTensor{Float64, 4}, 5)
-  c4 = Array(c4)
-  c4m = unfoldsym(c4)
-  m4 = c4m*c4m'
+  m4 = unfoldsym(c4)
   @test size(m4) == (5,5)
-  @test hosvdapprox(Σ, c4) ≈ log(det(m4)^(1/2)/det(Σ)^(4/2))
+  @test hosvdapprox(Σ, Array(c4)) ≈ log(det(m4)^(1/2)/det(Σ)^(4/2))
   c5 = rand(SymmetricTensor{Float64, 5}, 5)
-  c5 = Array(c5)
-  c5m = unfoldsym(c5)
-  m5 = c5m*c5m'
+  m5 = unfoldsym(c5)
   @test size(m5) == (5,5)
-  @test hosvdapprox(Σ, c5) ≈ log(det(m5)^(1/2)/det(Σ)^(5/2))
+  @test hosvdapprox(Σ, Array(c5)) ≈ log(det(m5)^(1/2)/det(Σ)^(5/2))
 end
 
 @testset "cumfsel tests" begin
  srand(43)
   Σ = rand(SymmetricTensor{Float64, 2}, 5)
-  Σ = Array(Σ)
   c = 0.1*ones(5,5,5)
   c[1,1,1] = 20.
   c[2,2,2] = 10.
@@ -98,6 +94,7 @@ end
   for j in permutations([1,3,3])
       c[j...] = 20.
   end
+  c = SymmetricTensor(c)
   ret = cumfsel(Σ, c, "hosvd", 5)
   @test ret[3][1] == [true, true, false, false, false]
   @test ret[3][2] ≈ 7.943479150509705
@@ -110,18 +107,33 @@ end
   @test cumfsel(Σ, 5)[1][3] == 5
   @test_throws AssertionError cumfsel(Σ, c, "mov", 5)
   @test_throws AssertionError cumfsel(Σ, c, "hosvd", 7)
-  @test_throws AssertionError cumfsel(Σ, rand(5,5,5), "hosvd", 5)
-  @test_throws RemoteException cumfsel(Σ, c[1:4, 1:4, 1:4], "hosvd", 5)
+  srand(42)
+  x = rand(12,10);
+  c = cumulants(x,4);
+  f = cumfsel(c[2], c[4], "hosvd")
+  @test f[9][1] == [false, false, false, false, false, false, true, false, false, false]
+  @test f[9][3] == 9
+  @test f[10][3] == 7
 end
 
 @testset "detectors" begin
   srand(42)
-  x = vcat(rand(8,2), 20*rand(2,2))
-  @test rxdetect(x, 0.95) == [false, false, false, false, false, false, false, false, true, true]
-  @test hosvdc4detect(x, 3., 1) == [false, false, false, false, false, false, false, false, true, true]
+  x = vcat(rand(8,2), 5*rand(1,2), 30*rand(1,2))
+  @test rxdetect(x, 0.9) == [false, false, false, false, false, false, false, false, false, true]
+  @test hosvdc4detect(x, 4., 2; b=2) == [false, false, false, false, false, false, false, false, true, true]
   ls = fill(true, 10)
-  @test hosvdstep(x, ls, 3., 1)[1] == [true, true, true, true, true, true, true, true, false, false]
-  @test hosvdstep(x, ls, 3., 1)[2] ≈ 1.43120851350894
+  ls1 = [true, true, true, true, true, true, true, true, false, false]
+  c = cumulants(x, 4)
+  @test hosvdstep(x, ls, 4., 2, c[4])[1] == ls1
+  @test hosvdstep(x, ls, 3., 1, c[4])[2] ≈ 1.147775879385989
+  @test hosvdstep(x, ls, 3., 2, c[4])[2] ≈ 1.2715241637233354
+  c = cumulants(x[ls1,:], 4)
+  @test hosvdstep(x, ls1, 4., 2, c[4])[1] == ls1
+  @test hosvdstep(x, ls1, 4., 2, c[4])[2] ≈ 1.6105157709082383
+  m = momentarray(x,4,2)
+  m1, t1 = updatemoments(m, size(x,1), x, ls1, ls)
+  @test t1 == 8
+  @test Array(m1[4]) ≈ Array(moment(x[1:8,:], 4))
 end
 
 addprocs(3)
@@ -129,13 +141,13 @@ addprocs(3)
 @everywhere using CumulantsFeatures
 @testset "greedesearch parallel implementation" begin
   g = greedesearchdata(a,b, testf, 3)
-  @test g[1][1] == [true, true, false]
-  @test g[2][1] == [false, true, false]
+  @test g[1][1] == [true, false, true]
+  @test g[2][1] == [false, false, true]
   @test g[3][1] == [false, false, false]
-  @test g[1][2] == -3.0
-  @test g[2][2] == 5.0
+  @test g[1][2] ≈ 0.48918301293211774
+  @test g[2][2] ≈ 0.9735659798036858
   @test g[3][2] == 1.0
-  @test g[1][3] == 3
+  @test g[1][3] == 2
   @test g[2][3] == 1
-  @test g[3][3] == 2
+  @test g[3][3] == 3
 end

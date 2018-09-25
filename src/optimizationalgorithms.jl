@@ -48,6 +48,7 @@ julia> reduceband(reshape(collect(1.:27.),(3,3,3)), [true, false, false])
 [:, :, 1] =
  1.0
 ```
+TODO reimplement in blocks
 """
 reduceband(ar::Array{T,N}, fibres::Vector{Bool}) where {T <: AbstractFloat, N} =
   ar[fill(fibres, N)...]
@@ -63,7 +64,13 @@ function unfoldsym(ar::Array{T,N}) where {T <: AbstractFloat, N}
   return reshape(ar, i, i^(N-1))
 end
 
-unfoldsym(t::SymmetricTensor{T, N}) where {T <: AbstractFloat, N} = unfoldsym(Array(t))
+"""
+TODO reimplement in blocks
+"""
+ function unfoldsym(t::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
+   t = unfoldsym(Array(t))
+   t*t'
+ end
 
 #greedy algorithm
 
@@ -103,44 +110,45 @@ function greedestep(Σ::Matrix{T}, c::Array{T, N}, maxfunction::Function,
   return bestls, v, i
 end
 
-function greedesearchdata(Σ::Matrix{T}, c::Array{T, N}, maxfunction::Function, k::Int) where {T <: AbstractFloat, N}
-  ls =  [true for i=1:size(Σ,1)]
+"""
+  greedesearchdata(Σ::SymmetricTensor{T,2}, c::SymmetricTensor{T, N}, maxfunction::Function, k::Int)
+
+returns array of bools that are non-outliers features
+"""
+function greedesearchdata(Σ::SymmetricTensor{T,2}, c::SymmetricTensor{T, N}, maxfunction::Function, k::Int) where {T <: AbstractFloat, N}
+  ls =  [true for i=1:Σ.dats]
+  Σ = Array(Σ)
+  c = Array(c)
   result = []
-  k <= size(Σ,1) || throw(AssertionError(" for k = $(k) > size(Σ, 1)"))
   for i = 1:k
     ls, value, j = greedestep(Σ, c, maxfunction, ls)
     push!(result, (ls,value,j))
+    value != -Inf || throw(AssertionError(" for k = $(k) optimisation does not work"))
   end
   result
 end
 
-function greedesearchdata(Σ::Matrix{T}, maxfunction::Function, k::Int) where T <: AbstractFloat
-  greedesearchdata(Σ, zeros(2,2,2), maxfunction, k)
-end
-
 """
-  function cumfsel(Σ::Matrix{T}, c::Array{T, N}, f::String, k::Int = size(Σ, 1)) where {T <: AbstractFloat, N}
+  function cumfsel(Σ::SymmetricTensor{T,2}, c::SymmetricTensor{T, N}, f::String, k::Int = Σ.dats) where {T <: AbstractFloat, N}
 
-Given the covariance matrix of data `Σ` and `c` - the `N`-th cumulant tensor used to
-measure the `N`'th order dependencies selects `k`-features (marginals) orderred from lowest to highest
-`N`'th order dependencies. `f` is the optimization function, `["hosvd", "norm", "mev"]` are possible.
+Returns an Array of tuples (ind::Array{Bool}, fval::Float64, i::Int). Given
+k-th Array ind are marginals removed after k -steps as those with low N'th order
+dependency, fval, the value of the target function at step k and i, a feature removed
+at step k.
 
-Returns an Array of tuples `(ind::Array{Bool}, fval::Float64, i::Int)`. First tuple corresponds to the marginal with lowest `N`'th order dependencies with other marginals, while last tuple to the marginal with highest
-`N`'th order dependencies.
+Uses Σ - the covariance matrix and c - the N'th cumulant tensor to measure the
+N'th order dependencies between marginals.
+Function f is the optimization function, ["hosvd", "norm", "mev"] are supported.
 
 ```jldoctest
 
 julia> srand(42);
 
-julia> using Cumulants
-
-julia> using SymmetricTensors
-
 julia> x = rand(12,10);
 
 julia> c = cumulants(x, 4);
 
-julia> cumfsel(Array(c[2]), Array(c[4]), "hosvd")
+julia> cumfsel(c[2], c[4], "hosvd")
 10-element Array{Any,1}:
  (Bool[true, true, true, false, true, true, true, true, true, true], 27.2519, 4)
  (Bool[true, true, false, false, true, true, true, true, true, true], 22.6659, 3)
@@ -152,20 +160,22 @@ julia> cumfsel(Array(c[2]), Array(c[4]), "hosvd")
  (Bool[false, false, false, false, false, false, true, false, true, false], 2.56748, 6)
  (Bool[false, false, false, false, false, false, true, false, false, false], 0.30936, 9)
  (Bool[false, false, false, false, false, false, false, false, false, false], 0.0, 7)
-
 ```
 """
-function cumfsel(Σ::Matrix{T}, c::Array{T, N}, f::String, k::Int = size(Σ, 1)) where {T <: AbstractFloat, N}
-  issymetric(c, 1e-4)
-  issymetric(Σ, 1e-4)
+function cumfsel(Σ::SymmetricTensor{T,2}, c::SymmetricTensor{T, N}, f::String, k::Int = Σ.dats) where {T <: AbstractFloat, N}
   if f == "hosvd"
     return greedesearchdata(Σ, c, hosvdapprox, k)
   elseif f == "norm"
     return greedesearchdata(Σ, c, mormbased, k)
   elseif f == "mev"
-    return greedesearchdata(Σ, mev, k)
+    return greedesearchdata(Σ, c ,mev, k)
   end
   throw(AssertionError("$(f) not supported use hosvd, norm or mev"))
 end
 
-cumfsel(Σ::Matrix{T}, k::Int = size(Σ, 1)) where T <: AbstractFloat = cumfsel(Σ, ones(2,2,2), "mev", k)
+"""
+  cumfsel(Σ::Matrix{T}, k::Int = size(Σ, 1))
+
+cumfsel that uses as default the mev method
+"""
+cumfsel(Σ::SymmetricTensor{T,2}, k::Int = Σ.dats) where T <: AbstractFloat = cumfsel(Σ, SymmetricTensor(ones(2,2,2)), "mev", k)
