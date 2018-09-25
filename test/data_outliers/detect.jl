@@ -4,9 +4,8 @@ using JLD2
 using FileIO
 using ArgParse
 using Distributions
-addprocs(8)
-@everywhere using Cumulants
-@everywhere using CumulantsFeatures
+using Cumulants
+using CumulantsFeatures
 using SymmetricTensors
 using StatsBase
 using ROCAnalysis

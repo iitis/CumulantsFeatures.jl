@@ -60,7 +60,7 @@ directions
 function hosvdstep(X::Matrix{T}, ls::Vector{Bool}, β::Float64, r::Int, cc::SymmetricTensor{T,4}) where T <: AbstractFloat
   bestls = copy(ls)
   M = unfoldsym(cc)
-  W = svd(M)[1][:,1:r]
+  W = eigvecs(M)[:,end:-1:end-r+1]
   Z = X*W
   mm = [mad(Z[ls,i]; center=median(Z[ls,i]), normalize=true) for i in 1:r]
   me = [median(Z[ls,i]) for i in 1:r]
