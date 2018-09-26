@@ -4,6 +4,7 @@ using JLD2
 using FileIO
 using ArgParse
 using PyCall
+using SymmetricTensors
 @pyimport matplotlib as mpl
 @pyimport matplotlib.colors as mc
 mpl.rc("text", usetex=true)
