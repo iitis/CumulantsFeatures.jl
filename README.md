@@ -5,13 +5,13 @@
 [![Coverage Status](https://coveralls.io/repos/github/ZKSI/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/ZKSI/CumulantsFeatures.jl?branch=master)
 
 CumFSel.jl provides Cumulants based algorithms used to select features subset or detect an outlier subset that posses higher order cross-correlations.
-An outlier subset is assumed to be modelled by non-Gausian multivariate distribution in contrary to an ordinary data subset that is assumed to be modelled by a Gaussian multivariate distribution.
+An outlier subset is assumed to be modelled by non-Gaussian multivariate distribution in contrary to an ordinary data subset that is assumed to be modelled by a Gaussian multivariate distribution.
 
 As of 24/09/2018 [@kdomino](https://github.com/kdomino) is the lead maintainer of this package.
 
 Julia 0.6 is required. Requires SymmetricTensors Cumulants and CumulantsUpdates modules.
 
-## Features selction
+## Features selection
 
 Given the `Σ`- covariance matrix of data and `c` - the `N`-th cumulant's tensor
 one can select `k` marginals with low `N`'th order dependencies. To this end run:
@@ -22,7 +22,7 @@ julia> function cumfsel(Σ::SymmetricTensor{T,2}, c::SymmetricTensor{T, N}, f::S
 
 ```
 
-Here `f` is optimization function, `["hosvd", "norm", "mev"]` are supported. The "hosvd" uses the Higher Order Singular Value decomposition approximation of the higher order cumulant's tensor to extract information. The "norm" uses the norm of the higher order cumulant's tensor cumulant's tensor. The "mev" takes only second order correlations.
+Here `f` is optimization function, `["hosvd", "norm", "mev"]` are supported. The "hosvd" uses the Higher Order Singular Value decomposition approximation of the higher order cumulant's tensor to extract information. While using "hosvd" we have the following family of methods. For `N=3` the Joind Skewness Band Selection (JSBS) - see X. Geng, K. Sun, L. Ji, H. Tang & Y. Zhao 'Joint Skewness and Its Application in Unsupervised Band Selection for Small Target Detection Sci Rep. 2015; 5: 9915 https://www.nature.com/articles/srep09915. For `N = 4` the Joint Kurtosis Features Selection (JKFS).  For `N = 5` the Joint Hyper Kurtosis Features Selection (JHKFS). For comparison of those methods see also P. Głomb, K. Domino, M. Romaszewski, M. Cholewa `Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images`, [arXiv:1808.03513] https://arxiv.org/abs/1808.03513. The "norm" uses the norm of the higher order cumulant's tensor cumulant's tensor. The "mev" takes only second order correlations.
 
 ```julia
 
@@ -54,7 +54,7 @@ julia> cumfsel(c[2], c[4], "hosvd")
 Returns an Array of tuples `(ind::Array{Bool}, fval::Float64, i::Int)`. First tuple corresponds to the marginal with lowest `N`'th order dependencies with other marginals, while last tuple to the marginal with highest
 `N`'th order dependencies. The `k`'th array gives an outcome after `k` steps. Here `ind` shows `k` marginals that yields lowest `N`'th order dependencies, `fval` the value of the target function at `k`'th step and `i` numerates the marginal removed at step `k`.
 
-If one wants limit numer of steps (e.g. to `2`) run:
+If one wants limit number of steps (e.g. to `2`) run:
 
 ```julia
 
@@ -85,7 +85,7 @@ The mev optimization function will be used.
 ```
 
 Takes data `X` in the form of matrix where first index correspond to realisations and
-second to feratures (marginals). Using the RX (Reed-Xiaoli) Anomaly Detection returns the array of Bool that
+second to features (marginals). Using the RX (Reed-Xiaoli) Anomaly Detection returns the array of Bool that
 correspond to outlier realisations. `alpha` is the sensitivity parameter of the RX detector.
 
 
@@ -129,7 +129,7 @@ julia> rxdetect(x, 0.95)
 
 
 Takes data in the form of matrix where first index correspond to realisations and
-second to feratures (marginals).Using the HOSVD of the `4`'th cumulant's tensor of data returns the array of Bool that
+second to features (marginals). Using the HOSVD of the `4`'th cumulant's tensor of data returns the array of Bool that
 correspond to outlier realisations. `β` is the sensitivity parameter while `r` a
 number of specific directions, data are projected onto.
 
