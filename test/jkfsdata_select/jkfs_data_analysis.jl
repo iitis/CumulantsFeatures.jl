@@ -83,8 +83,8 @@ function plotdata(plot_data, data_parts_label, ν, malf_size, var_number, repeat
     data_y = plot_data[data_label]
     data_x = collect(0:(length(data_y)-1))
     println(data_y)
-    d = replace(data_label, "bands_", "")
-    plot(data_x, data_y/repeating, p[i], label=replace(d, "_malf", ""), color = cols[i], linewidth = 0.8, markersize = 3.)
+    d = replace(data_label, "bands_"=>"")
+    plot(data_x, data_y/repeating, p[i], label=replace(d, "_malf"=>""), color = cols[i], linewidth = 0.8, markersize = 3.)
   end
   data_x = 0:malf_size
   #data_y = map(i-> theoretical(var_number, malf_size, i), data_x)
