@@ -2,7 +2,10 @@ module CumulantsFeatures
   using Distributions
   using SymmetricTensors
   using Cumulants
+  using Distributed
   using StatsBase
+  using LinearAlgebra
+  using SharedArrays
   using CumulantsUpdates
   import SymmetricTensors: issymetric
 

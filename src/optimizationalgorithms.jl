@@ -1,7 +1,7 @@
 mev(Σ::Matrix{T}, c, ls::Vector{Bool}) where T <: AbstractFloat = det(reduceband(Σ, ls))
 
 function mormbased(Σ::Matrix{T}, c::Array{T, N}, ls::Vector{Bool}) where {T <: AbstractFloat, N}
-  vecnorm(reduceband(c, ls))/vecnorm(reduceband(Σ, ls))^(N/2)
+  norm(reduceband(c, ls))/norm(reduceband(Σ, ls))^(N/2)
 end
 
 """
@@ -96,11 +96,11 @@ false
 """
 function greedestep(Σ::Matrix{T}, c::Array{T, N}, maxfunction::Function,
                     ls::Vector{Bool}) where {T <: AbstractFloat, N}
-  inds = find(ls)
+  inds = findall(ls)
   bestval = SharedArray{T}(length(ls))
   bestval .= -Inf
   bestls = copy(ls)
-  @sync @parallel for i in inds
+  @sync @distributed for i in inds
     templs = copy(ls)
     templs[i] = false
     bestval[i] = maxfunction(Σ, c, templs)

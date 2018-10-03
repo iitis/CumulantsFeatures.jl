@@ -1,8 +1,12 @@
-using Base.Test
+using Test
+using Distributed
+using LinearAlgebra
 using SymmetricTensors
 using Cumulants
 using CumulantsFeatures
 using Combinatorics
+using Distributed
+using Random
 using CumulantsUpdates
 import CumulantsFeatures: reduceband, greedestep, unfoldsym, hosvdstep, greedesearchdata, mev, mormbased, hosvdapprox
 import CumulantsFeatures: updatemoments
@@ -14,13 +18,13 @@ ar = reshape(collect(1.:27.),(3,3,3))
 
 @testset "unfoldsym reduce" begin
   @test unfoldsym(st) == reshape(te, (2,4))
-  stt = convert(SymmetricTensor, st)
+  stt = SymmetricTensor(st)
   @test unfoldsym(stt) == reshape(te, (2,4))*reshape(te, (2,4))'
   @test reduceband(ar, [true, false, false])  ≈ ones(Float64, (1,1,1))
   @test reduceband(ar, [true, true, true])  ≈ ar
 end
 
-srand(42)
+Random.seed!(42)
 a = rand(SymmetricTensor{Float64, 2}, 3)
 b = rand(SymmetricTensor{Float64, 3}, 3)
 testf(a,b,bool)= det(a[bool,bool])
@@ -58,7 +62,7 @@ end
 end
 
 @testset "hosvdapprox additional tests" begin
-  srand(42)
+  Random.seed!(42)
   c3 = rand(SymmetricTensor{Float64, 3}, 5)
   Σ = rand(SymmetricTensor{Float64, 2}, 5)
   m3 = unfoldsym(c3)
@@ -76,7 +80,7 @@ end
 end
 
 @testset "cumfsel tests" begin
- srand(43)
+ Random.seed!(43)
   Σ = rand(SymmetricTensor{Float64, 2}, 5)
   c = 0.1*ones(5,5,5)
   c[1,1,1] = 20.
@@ -107,7 +111,7 @@ end
   @test cumfsel(Σ, 5)[1][3] == 5
   @test_throws AssertionError cumfsel(Σ, c, "mov", 5)
   @test_throws AssertionError cumfsel(Σ, c, "hosvd", 7)
-  srand(42)
+  Random.seed!(42)
   x = rand(12,10);
   c = cumulants(x,4);
   f = cumfsel(c[2], c[4], "hosvd")
@@ -117,7 +121,7 @@ end
 end
 
 @testset "detectors" begin
-  srand(42)
+  Random.seed!(42)
   x = vcat(rand(8,2), 5*rand(1,2), 30*rand(1,2))
   @test rxdetect(x, 0.9) == [false, false, false, false, false, false, false, false, false, true]
   @test hosvdc4detect(x, 4., 2; b=2) == [false, false, false, false, false, false, false, false, true, true]
@@ -137,6 +141,7 @@ end
 end
 
 addprocs(3)
+@everywhere using LinearAlgebra
 @everywhere testf(a,b,bool)= det(a[bool,bool])
 @everywhere using CumulantsFeatures
 @testset "greedesearch parallel implementation" begin

@@ -39,7 +39,7 @@ julia> rxdetect(x, 0.95)
 function rxdetect(X::Matrix{T}, alpha::Float64 = 0.99) where T <: AbstractFloat
   t = size(X,1)
   outliers = fill(false, t)
-  mu = mean(X,1)[1,:]
+  mu = mean(X,dims=1)[1,:]
   Kinv = inv(cov(X))
   d = Chisq(size(X,2))
   for i in 1:t
@@ -64,12 +64,12 @@ function hosvdstep(X::Matrix{T}, ls::Vector{Bool}, β::Float64, r::Int, cc::Symm
   Z = X*W
   mm = [mad(Z[ls,i]; center=median(Z[ls,i]), normalize=true) for i in 1:r]
   me = [median(Z[ls,i]) for i in 1:r]
-  for i in find(ls)
+  for i in findall(ls)
     if maximum(abs.(Z[i,:].-me)./mm) .> β
      bestls[i] = false
    end
  end
- bestls, vecnorm([kurtosis(Z[bestls,i]) for i in 1:r])
+ bestls, norm([kurtosis(Z[bestls,i]) for i in 1:r])
 end
 
 """
@@ -113,9 +113,9 @@ julia> rxdetect(x, 0.95)
 ```
 """
 function hosvdc4detect(X::Matrix{T}, β::Float64 = 4.1, r::Int = 3; b::Int = 4) where T <: AbstractFloat
-  X = X.-mean(X,1)
+  X = X.-mean(X,dims=1)
   s = cov(X)
-  X = X*Real.(sqrtm(inv(s)))
+  X = X*Real.(sqrt(inv(s)))
   ls = fill(true, size(X,1))
   lsold = copy(ls)
   aold = 1000000000.
