@@ -1,9 +1,12 @@
+using Distributed
+using ArgParse
 procs_id = addprocs(8)
 @everywhere using Distributions
 @everywhere using Cumulants
 @everywhere using SymmetricTensors
 using JLD2
 using FileIO
+using Random
 
 @everywhere import CumulantsFeatures: reduceband
 @everywhere using DatagenCopulaBased
@@ -11,7 +14,7 @@ using FileIO
 
 @everywhere cut_order(x) = (x->x[3]).(x)
 
-ν = parse(ARGS[1])
+ν = parse(Int64, ARGS[1])
 println(ν)
 
 
@@ -44,7 +47,7 @@ for m=(known_data_size+1):test_number
     println(" > $m ($ν)")
     malf = randperm(n)[1:malf_size]
     Σ = cormatgen_rand(n)
-    samples_orig = rand(MvNormal(Σ), t)'
+    samples_orig = Array(rand(MvNormal(Σ), t)')
 
     versions = [(x->x, "original"),
                 (x->gcop2tstudent(x, malf, ν), "malf")]
@@ -52,9 +55,9 @@ for m=(known_data_size+1):test_number
     cur_dict = Dict{String, Any}("malf" => malf,
                                  "cor_source" => Σ)
 
-    data_dict = @parallel (merge) for (sampler, label)=versions
+    data_dict = @distributed (merge) for (sampler, label)=versions
       println(label)
-      samples = sampler(samples_orig)
+      samples = Array(sampler(samples_orig))
       Σ_malf = SymmetricTensor(cov(samples))
       cum = cumulants(samples, 4)
       bands2 = cut_order(cumfsel(Σ_malf))

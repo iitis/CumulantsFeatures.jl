@@ -4,25 +4,36 @@
 [![Build Status](https://travis-ci.org/ZKSI/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumulantsFeatures.jl)
 [![Coverage Status](https://coveralls.io/repos/github/ZKSI/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/ZKSI/CumulantsFeatures.jl?branch=master)
 
-CumulantsFeatures.jl provides Cumulants based algorithms used to select features subset or detect an outlier subset that posses higher order cross-correlations.
-An outlier subset is assumed to be modelled by non-Gaussian multivariate distribution in contrary to an ordinary data subset that is assumed to be modelled by a Gaussian multivariate distribution.
+CumulantsFeatures.jl provides multivariate cumulants based algorithms used to select a features subset or detect an outlier subset out of realisations of multivariate data.
+In both cases,the ordinary data subset is assumed to be modelled by the Gaussian multivariate distribution, while the outlier data subset is assumed to be modelled by the non-Gaussian multivariate distribution.
+The algorithms handles `t` realisations of `n` variate data presented in the form of `t x n` matrix of Floats. In the case of features selection one has to compute multivariate cumulants first using
+Cumulants.jl.
 
 As of 24/09/2018 [@kdomino](https://github.com/kdomino) is the lead maintainer of this package.
 
-Julia 0.7 is required. Requires SymmetricTensors Cumulants and CumulantsUpdates modules.
+## Installation
+
+Within Julia, run
+
+```julia
+pkg> add CumulantsFeatures
+```
+
+to install the files. Julia 0.7 or later is required. Requires SymmetricTensors Cumulants and CumulantsUpdates modules.
 
 ## Features selection
 
 Given the `Σ`- covariance matrix of data and `c` - the `N`-th cumulant's tensor
-one can select `k` marginals with low `N`'th order dependencies. To this end run:
+select `k` marginals with low `N`'th order dependencies by running:
 
 ```julia
 
 julia> function cumfsel(Σ::SymmetricTensor{T,2}, c::SymmetricTensor{T, N}, f::String, k::Int = Σ.dats) where {T <: AbstractFloat, N}
 
 ```
-
-Here `f` is optimization function, `["hosvd", "norm", "mev"]` are supported. The "hosvd" uses the Higher Order Singular Value decomposition approximation of the higher order cumulant's tensor to extract information. While using "hosvd" we have the following family of methods. For `N=3` the Joind Skewness Band Selection (JSBS) - see X. Geng, K. Sun, L. Ji, H. Tang & Y. Zhao 'Joint Skewness and Its Application in Unsupervised Band Selection for Small Target Detection Sci Rep. 2015; 5: 9915 https://www.nature.com/articles/srep09915. For `N = 4` the Joint Kurtosis Features Selection (JKFS).  For `N = 5` the Joint Hyper Kurtosis Features Selection (JHKFS). For comparison of those methods see also P. Głomb, K. Domino, M. Romaszewski, M. Cholewa `Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images`, [arXiv:1808.03513] https://arxiv.org/abs/1808.03513. The "norm" uses the norm of the higher order cumulant's tensor, this is a benchmark method for comparison. The "mev" takes only second order correlations.
+To compute the covariance matrix and `N`-th cumulant's tensor use Cumulants.jl
+`Σ.dats` is a size of the `Σ` matrix stored in the `SymmetricTensor` type, see SymmetricTensors.jl.
+The `f` is the optimization function, `["hosvd", "norm", "mev"]` are supported. The "hosvd" uses the Higher Order Singular Value decomposition approximation of the higher order cumulant's tensor to extract information. While using "hosvd" we have the following family of methods. For `N=3` the Joint Skewness Band Selection (JSBS) - see X. Geng, K. Sun, L. Ji, H. Tang & Y. Zhao 'Joint Skewness and Its Application in Unsupervised Band Selection for Small Target Detection Sci Rep. vol.5 (2015) https://www.nature.com/articles/srep09915. For `N = 4` the Joint Kurtosis Features Selection (JKFS) - see K. Domino: 'The use of the Higher Order Singular Value Decomposition of the 4-cumulant's tensors in features selection and outlier detection', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541) (2018). For `N = 5` the Joint Hyper Kurtosis Features Selection (JHKFS). For application of HOSVD based methods see also P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images', [arXiv:1808.03513] (https://arxiv.org/abs/1808.03513) (2018). The "norm" uses the norm of the higher order cumulant's tensor, this is a benchmark method for comparison. The "mev" uses only second order correlations, see: C. Sheffield, 'Selecting band combinations from multispectral data', Photogrammetric Engineering and Remote Sensing, vol. 51 (1985)
 
 ```julia
 
@@ -54,7 +65,7 @@ julia> cumfsel(c[2], c[4], "hosvd")
 Returns an Array of tuples `(ind::Array{Bool}, fval::Float64, i::Int)`. First tuple corresponds to the marginal with lowest `N`'th order dependencies with other marginals, while last tuple to the marginal with highest
 `N`'th order dependencies. The `k`'th array gives an outcome after `k` steps. Here `ind` shows `k` marginals that yields lowest `N`'th order dependencies, `fval` the value of the target function at `k`'th step and `i` numerates the marginal removed at step `k`.
 
-If one wants limit number of steps (e.g. to `2`) run:
+To limit number of steps (e.g. to `2`) run:
 
 ```julia
 
@@ -80,13 +91,13 @@ The mev optimization function will be used.
 
 ```julia
 
-  rxdetect(X::Matrix{T}, alpha::Float64 = 0.99)
+  rxdetect(X::Matrix{T}, α::Float64 = 0.99)
 
 ```
 
 Takes data `X` in the form of matrix where first index correspond to realisations and
 second to features (marginals). Using the RX (Reed-Xiaoli) Anomaly Detection returns the array of Bool that
-correspond to outlier realisations. `alpha` is the sensitivity parameter of the RX detector.
+correspond to outlier realisations. `α` is the sensitivity (threshold) parameter of the RX detector.
 
 
 ```julia
@@ -119,7 +130,7 @@ julia> rxdetect(x, 0.95)
   true
 ```
 
-### The HOSVD of the `4` th cumulant
+### The HOSVD of the `4`'th cumulant
 
 ```julia
 
@@ -129,8 +140,7 @@ julia> rxdetect(x, 0.95)
 
 
 Takes data in the form of matrix where first index correspond to realisations and
-second to features (marginals). Using the HOSVD of the `4`'th cumulant's tensor of data returns the array of Bool that
-correspond to outlier realisations. `β` is the sensitivity parameter while `r` a
+second to features (marginals). Using the HOSVD of the `4`'th cumulant's tensor of data returns the array of `Bool` that correspond to outlier realisations. For the detector introduction see see K. Domino: 'The use of the Higher Order Singular Value Decomposition of the 4-cumulant's tensors in features selection and outlier detection', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541) (2018). The parameter `β` is the sensitivity parameter while `r` a
 number of specific directions, data are projected onto.
 
 ```julia
@@ -163,10 +173,21 @@ julia> rxdetect(x, 0.95)
   true
   true
 ```
+## Data generation and tests
 
+In folder tests there following Julia executable files.
+
+### Features selection
+
+ The executable file `jkfs_select.jl` generates multivariate data with non-Gaussian subset of marginals modelled by the t-Student copula. This file is parametrised by an integer being a number of degrees of freedom of the t-Student copula. Returns a `.jld2` file with data in `\jkfsdata_select` folder. Run `jkfs_data_analysis.jl` within, to achieve results of features selection given different methods.
+
+### Outlier detection
+
+ The executable file `jkfs_outliers.jl` generates multivariate data with non-Gaussian outliers subset of realisations modeled by the t-Student copula.
+ This file is parametrised by an integer being a number of degrees of freedom of the t-Student copula. Returns a `.jld2` file with data in `\data_outliers` folder. Run `detect.jl` within to detect outliers and compare the "HOSVD" based method with the "RX" detector.
 
 # Citing this work
 
 This project was partially financed by the National Science Centre, Poland – project number 2014/15/B/ST6/05204.
 
-Please cite K. Domino: ' The use of the Higher Order Singular Value Decomposition of the 4-cumulant's tensors in features selection and outlier detection', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541).
+While using this module, please cite K. Domino: 'The use of the Higher Order Singular Value Decomposition of the 4-cumulant's tensors in features selection and outlier detection', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541).
