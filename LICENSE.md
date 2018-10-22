@@ -1,4 +1,4 @@
-CumFSel.jl is licensed under the MIT License (MIT)
+CumulantsFeatures.jl is licensed under the MIT License (MIT)
 
 Copyright (c) 2018 Krzysztof Domino, 
 Institute of Theoretical and Applied Informatics, Polish Academy of Sciences
