@@ -67,10 +67,10 @@ end
 """
 TODO reimplement in blocks
 """
- function unfoldsym(t::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
+function unfoldsym(t::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
    t = unfoldsym(Array(t))
    t*t'
- end
+end
 
 #greedy algorithm
 
