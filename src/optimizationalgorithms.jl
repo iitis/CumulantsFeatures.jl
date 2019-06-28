@@ -178,4 +178,4 @@ end
 
 cumfsel that uses as default the mev method
 """
-cumfsel(Σ::SymmetricTensor{T,2}, k::Int = Σ.dats) where T <: AbstractFloat = cumfsel(Σ, SymmetricTensor(ones(2,2,2)), "mev", k)
+cumfsel(Σ::SymmetricTensor{T,2}, k::Int = Σ.dats) where T <: AbstractFloat = cumfsel(Σ, SymmetricTensor(convert(Array{T}, ones(2,2,2))), "mev", k)
