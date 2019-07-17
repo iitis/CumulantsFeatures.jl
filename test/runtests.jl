@@ -120,6 +120,16 @@ end
   @test f[10][3] == 7
 end
 
+@testset "cumfsel tests on Float32" begin
+  Random.seed!(42)
+  x = rand(Float32, 12,10);
+  c = cumulants(x,4);
+  f = cumfsel(c[2], c[4], "hosvd")
+  @test f[9][1] == [false, false, false, false, false, false, true, false, false, false]
+  @test f[9][3] == 9
+  @test f[10][3] == 7
+end
+
 @testset "detectors" begin
   Random.seed!(42)
   x = vcat(rand(8,2), 5*rand(1,2), 30*rand(1,2))
