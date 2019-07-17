@@ -38,7 +38,7 @@ The `f` is the optimization function, `["hosvd", "norm", "mev"]` are supported. 
 
 ```julia
 
-julia> srand(42);
+julia> Random.seed!(42);
 
 julia> using Cumulants
 
@@ -102,7 +102,7 @@ correspond to outlier realisations. `α` is the sensitivity (threshold) paramete
 
 
 ```julia
-julia> srand(42);
+julia> Random.seed!(42);
 
 julia> x = vcat(rand(8,2), 20*rand(2,2))
 10×2 Array{Float64,2}:
@@ -146,7 +146,7 @@ number of specific directions, data are projected onto.
 
 ```julia
 
-julia> srand(42);
+julia> Random.seed!(42);
 
 julia> x = vcat(rand(8,2), 20*rand(2,2))
 10×2 Array{Float64,2}:
