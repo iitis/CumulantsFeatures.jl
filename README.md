@@ -86,6 +86,28 @@ julia> cumfsel(Σ::SymmetricTensor{T,2}, k::Int = Σ.dats)
 ```
 The mev optimization function will be used.
 
+## Matrix of higher order correlations
+
+```julia
+
+  cum2mat(c::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
+
+```
+Returns a matrix SymmetricTensor{T, 2} being a contraction of tensor c
+with itself in all modes but one.
+
+```julia
+
+julia> Random.seed!(42);
+
+julia> t = rand(SymmetricTensor{Float64, 3}, 4);
+
+julia> cum2mat(t)
+SymmetricTensor{Float64,2}(Union{Nothing, Array{Float64,2}}[[7.69432 4.9757; 4.9757 5.72935] [6.09424 4.92375; 5.05157 3.17723]; nothing [7.33094 4.93128; 4.93128 4.7921]], 2, 2, 4, true)
+
+
+```
+
 ## Detection
 
 ### RX detector

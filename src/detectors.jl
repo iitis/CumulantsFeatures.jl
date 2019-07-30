@@ -7,7 +7,7 @@ Using the RX (Reed-Xiaoli) Anomaly Detection returns the array of Bool that
 correspond to outlier realisations. alpha is the sensitivity parameter of the RX detector
 
 ```jldoctest
-julia> srand(42);
+julia> Random.seed!(42);
 
 julia> x = vcat(rand(8,2), 20*rand(2,2))
 10×2 Array{Float64,2}:
@@ -83,7 +83,7 @@ number of specific directions, data are projected onto. Parameter b is a size of
 blocks in a SymmetricTensors structure
 
 ```jldoctest
-julia> srand(42);
+julia> Random.seed!(42);
 
 julia> x = vcat(rand(8,2), 20*rand(2,2))
 10×2 Array{Float64,2}:

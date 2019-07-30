@@ -11,6 +11,8 @@ using CumulantsUpdates
 import CumulantsFeatures: reduceband, greedestep, unfoldsym, hosvdstep, greedesearchdata, mev, mormbased, hosvdapprox
 import CumulantsFeatures: updatemoments
 
+
+
 te = [-0.112639 0.124715 0.124715 0.268717 0.124715 0.268717 0.268717 0.046154]
 st = (reshape(te, (2,2,2)))
 mat = reshape(te[1:4], (2,2))
@@ -152,10 +154,21 @@ end
   @test Array(m1[4]) ≈ Array(moment(x[1:8,:], 4))
 end
 
-addprocs(3)
+include("symten2mattest.jl")
+
+addprocs(6)
+
+@everywhere using CumulantsFeatures
+@everywhere using SymmetricTensors
+@everywhere using Cumulants
+@everywhere import SymmetricTensors: getblock
+
+include("paralleltests.jl")
+
+
 @everywhere using LinearAlgebra
 @everywhere testf(a,b,bool)= det(a[bool,bool])
-@everywhere using CumulantsFeatures
+
 @testset "greedesearch parallel implementation" begin
   g = greedesearchdata(a,b, testf, 3)
   @test g[1][1] == [true, false, true]

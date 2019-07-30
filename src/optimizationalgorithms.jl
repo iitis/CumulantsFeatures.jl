@@ -142,7 +142,7 @@ Function f is the optimization function, ["hosvd", "norm", "mev"] are supported.
 
 ```jldoctest
 
-julia> srand(42);
+julia> Random.seed!(42);
 
 julia> x = rand(12,10);
 

@@ -7,10 +7,11 @@ module CumulantsFeatures
   using LinearAlgebra
   using SharedArrays
   using CumulantsUpdates
-  import SymmetricTensors: issymetric
+  import SymmetricTensors: issymetric, getblock, pyramidindices
 
   include("optimizationalgorithms.jl")
   include("detectors.jl")
+  include("symten2mat.jl")
 
-  export cumfsel, rxdetect, hosvdc4detect
+  export cumfsel, rxdetect, hosvdc4detect, cum2mat
 end
