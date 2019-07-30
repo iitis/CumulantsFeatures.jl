@@ -39,7 +39,7 @@ end
 # something wrong for differet block sizes
 @testset "test on parallel" begin
     Random.seed!(42)
-    t = rand(SymmetricTensor{Float64, 5}, 60, 7)
+    t = rand(SymmetricTensor{Float64, 5}, 26, 4)
     @time s = cum2mat(t)
     @time X = unfold(Array(t), 1)
     @time M = X*transpose(X)
