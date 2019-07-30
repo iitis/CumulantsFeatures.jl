@@ -34,12 +34,6 @@ function computeblock(bm::SymmetricTensor{T, N}, i::Tuple{Int, Int}, dims::Tuple
     for k1 in 1:bm.bln
       @inbounds M1 = unfold(getblock(bm, (i[1],k1, k...)),1)
       @inbounds M2 = unfold(getblock(bm, (k1,i[2],k...)),2)
-      if typeof(M1) != Array{Float64,2}
-        println("M1")
-      end
-      if typeof(M2) != Array{Float64,2}
-        println("M2")
-      end
       @inbounds R += M1*transpose(M2)
     end
   end

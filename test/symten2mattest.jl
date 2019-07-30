@@ -79,7 +79,7 @@ end
 end
 
 @testset "test on larger set" begin
-    t = rand(SymmetricTensor{Float64, 5}, 60, 7)
+    t = rand(SymmetricTensor{Float64, 5}, 26, 4)
     @time s = cum2mat(t)
     @time X = unfold(Array(t), 1)
     @time M = X*transpose(X)
