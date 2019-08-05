@@ -72,5 +72,5 @@ function cum2mat(bm::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
         ret[p[j]...] = M[j]
       end
     end
-    SymmetricTensor(ret)
+    SymmetricTensor(ret; testdatstruct = false)
 end
