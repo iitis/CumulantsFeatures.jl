@@ -2,7 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/ZKSI/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumulantsFeatures.jl)
-[![Coverage Status](https://coveralls.io/repos/github/ZKSI/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/ZKSI/CumulantsFeatures.jl?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/iitis/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/CumulantsFeatures.jl?branch=master)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3339299.svg)](https://doi.org/10.5281/zenodo.3339299)
 
 CumulantsFeatures.jl provides multivariate cumulants based algorithms used to select a features subset or detect an outlier subset out of realisations of multivariate data.
