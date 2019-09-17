@@ -20,7 +20,7 @@ Within Julia, run
 pkg> add CumulantsFeatures
 ```
 
-to install the files. Julia 0.7 or later is required. Requires SymmetricTensors Cumulants and CumulantsUpdates modules.
+to install the files. Julia 1.0 or later is required. Requires SymmetricTensors Cumulants and CumulantsUpdates modules.
 
 ## Features selection
 
