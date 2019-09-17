@@ -1,7 +1,7 @@
 # CumulantsFeatures.jl
 
 
-[![Build Status](https://travis-ci.org/ZKSI/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/ZKSI/CumulantsFeatures.jl)
+[![Build Status](https://travis-ci.org/iitis/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/iitis/CumulantsFeatures.jl)
 [![Coverage Status](https://coveralls.io/repos/github/iitis/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/CumulantsFeatures.jl?branch=master)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3339299.svg)](https://doi.org/10.5281/zenodo.3339299)
 
