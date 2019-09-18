@@ -1,6 +1,6 @@
 import CumulantsFeatures: makeblocksize, computeblock
 
-@testset "axiliary" begin
+@testset "axiliary for cum2mat" begin
     Random.seed!(42)
     t = rand(SymmetricTensor{Float64, 3}, 9, 4)
     @test makeblocksize(t, (1,1)) == (4,4)
@@ -12,7 +12,26 @@ import CumulantsFeatures: makeblocksize, computeblock
     @test computeblock(t, (1,1), dims) ≈ [21.8503 16.2408 20.5519 18.4874; 16.2408 25.1741 18.1145 19.4899; 20.5519 18.1145 31.5073 22.8366; 18.4874 19.4899 22.8366 28.156] atol = 0.01
 end
 
-@testset "random sym tensors" begin
+@testset "cum2mat tests on cumulants" begin
+    x = rand(20,13)
+    c = cumulants(x,5,2)
+    s = cum2mat(c[3])
+    X = unfold(Array(c[3]), 1)
+    M = X*transpose(X)
+    @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-10)
+
+    s = cum2mat(c[4])
+    X = unfold(Array(c[4]), 1)
+    M = X*transpose(X)
+    @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-10)
+
+    s = cum2mat(c[5])
+    X = unfold(Array(c[5]), 1)
+    M = X*transpose(X)
+    @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-10)
+end
+
+@testset "cum2mat tests on random tensor one core" begin
     @testset "order 3" begin
         Random.seed!(42)
         t = rand(SymmetricTensor{Float64, 3}, 12, 4)
@@ -56,32 +75,11 @@ end
         M = X*transpose(X)
         @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-10)
     end
-end
-
-
-@testset "test on cumulants" begin
-    x = rand(20,13)
-    c = cumulants(x,5,2)
-    s = cum2mat(c[3])
-    X = unfold(Array(c[3]), 1)
-    M = X*transpose(X)
-    @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-10)
-
-    s = cum2mat(c[4])
-    X = unfold(Array(c[4]), 1)
-    M = X*transpose(X)
-    @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-10)
-
-    s = cum2mat(c[5])
-    X = unfold(Array(c[5]), 1)
-    M = X*transpose(X)
-    @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-10)
-end
-
-@testset "test on larger set" begin
-    t = rand(SymmetricTensor{Float64, 5}, 26, 4)
-    @time s = cum2mat(t)
-    @time X = unfold(Array(t), 1)
-    @time M = X*transpose(X)
-    @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+    @testset "larger data set" begin
+        t = rand(SymmetricTensor{Float64, 5}, 26, 4)
+        s = cum2mat(t)
+        X = unfold(Array(t), 1)
+        M = X*transpose(X)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+    end
 end
