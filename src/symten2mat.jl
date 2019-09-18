@@ -60,17 +60,17 @@ SymmetricTensor{Float64,2}(Union{Nothing, Array{Float64,2}}[[7.69432 4.9757; 4.9
 
 function cum2mat(bm::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
     ret = arraynarrays(T, bm.bln, bm.bln)
-    dims = (fill(bm.bln, N-2)...,)
+    ds = (fill(bm.bln, N-2)...,)
     if nworkers() == 1
       for i in pyramidindices(2, bm.bln)
-        @inbounds ret[i...] = computeblock(bm, i, dims)
+        @inbounds ret[i...] = computeblock(bm, i, ds)
       end
     else
-      p = pyramidindices(2, bm.bln)
-      f(i) = computeblock(bm, i, dims)
-      M = pmap(f, p)
-      for j in 1:length(p)
-        ret[p[j]...] = M[j]
+      getbl(ind::Tuple{Int, Int}) = computeblock(bm, ind, ds)
+      pyinds = pyramidindices(2, bm.bln)
+      mats = pmap(getbl, pyinds)
+      for j in 1:length(pyinds)
+        ret[pyinds[j]...] = mats[j]
       end
     end
     SymmetricTensor(ret; testdatstruct = false)
