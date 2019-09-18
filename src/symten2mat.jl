@@ -67,7 +67,8 @@ function cum2mat(bm::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
       end
     else
       p = pyramidindices(2, bm.bln)
-      M = pmap(i::Tuple{Int, Int} -> computeblock(bm, i, dims), p)
+      f(i) = computeblock(bm, i, dims)
+      M = pmap(f, p)
       for j in 1:length(p)
         ret[p[j]...] = M[j]
       end
