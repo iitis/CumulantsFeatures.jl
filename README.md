@@ -198,7 +198,7 @@ julia> rxdetect(x, 0.95)
 ```
 ## Data generation and tests
 
-In folder tests there following Julia executable files.
+In folder test/data_outliers and test/ there are Julia executable files testing selection and detection algorithms on artificial data.
 
 ### Features selection
 
