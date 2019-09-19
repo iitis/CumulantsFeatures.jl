@@ -27,8 +27,8 @@ Returns Matrix{T}, the single block of the output higher correlation matrix
 """
 
 function computeblock(bm::SymmetricTensor{T, N}, i::Tuple{Int, Int}, dims::Tuple) where {T <: AbstractFloat, N}
-  R = zeros(T, makeblocksize(bm, i))
   x = bm.bln^(N-2)
+  R = zeros(T, makeblocksize(bm, i))
   for j in 1:x
     @inbounds k = Tuple(CartesianIndices(dims)[j])
     for k1 in 1:bm.bln
@@ -40,6 +40,28 @@ function computeblock(bm::SymmetricTensor{T, N}, i::Tuple{Int, Int}, dims::Tuple
   return R
 end
 
+"""
+  computeblock_p(bm::SymmetricTensor{T, N}, i::Tuple{Int, Int}, dims::Tuple) where {T <: AbstractFloat, N}
+
+Returns Matrix{T}, the single block of the output higher correlation matrix
+Parallel implementation
+"""
+
+function computeblock_p(bm::SymmetricTensor{T, N}, i::Tuple{Int, Int}, dims::Tuple) where {T <: AbstractFloat, N}
+  x = bm.bln^(N-2)
+  R = SharedArray(zeros(T, (x, makeblocksize(bm, i)...)))
+  @sync @distributed for j in 1:x
+    @inbounds k = Tuple(CartesianIndices(dims)[j])
+    for k1 in 1:bm.bln
+      @inbounds M1 = unfold(getblock(bm, (i[1],k1, k...)),1)
+      @inbounds M2 = unfold(getblock(bm, (k1,i[2],k...)),2)
+      @inbounds R[j,:,:] += M1*transpose(M2)
+    end
+  end
+  R = Array(R)
+  R = mapreduce(i -> R[i,:,:], +, 1:size(R,1))
+  return R
+end
 """
   cum2mat(bm::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
 
@@ -61,8 +83,14 @@ SymmetricTensor{Float64,2}(Union{Nothing, Array{Float64,2}}[[7.69432 4.9757; 4.9
 function cum2mat(bm::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
     ret = arraynarrays(T, bm.bln, bm.bln)
     ds = (fill(bm.bln, N-2)...,)
-    for i in pyramidindices(2, bm.bln)
-      @inbounds ret[i...] = computeblock(bm, i, ds)
+    if nworkers() == 1
+      for i in pyramidindices(2, bm.bln)
+        @inbounds ret[i...] = computeblock(bm, i, ds)
+      end
+    else
+      for i in pyramidindices(2, bm.bln)
+        @inbounds ret[i...] = computeblock_p(bm, i, ds)
+      end
     end
     SymmetricTensor(ret; testdatstruct = false)
 end

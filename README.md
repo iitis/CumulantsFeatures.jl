@@ -105,7 +105,7 @@ julia> t = rand(SymmetricTensor{Float64, 3}, 4);
 julia> cum2mat(t)
 SymmetricTensor{Float64,2}(Union{Nothing, Array{Float64,2}}[[7.69432 4.9757; 4.9757 5.72935] [6.09424 4.92375; 5.05157 3.17723]; nothing [7.33094 4.93128; 4.93128 4.7921]], 2, 2, 4, true)
 
-
+Parallel computation is supported
 ```
 
 ## Detection
