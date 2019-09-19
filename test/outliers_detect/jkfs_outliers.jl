@@ -34,7 +34,7 @@ function main(args)
   @everywhere n = 50
   @everywhere malf_size = 10
   @everywhere a = 1_000
-  data_dir = ""
+  data_dir = "."
   test_number = 3
   filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
 
