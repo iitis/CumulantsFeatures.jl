@@ -80,6 +80,6 @@ end
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 end

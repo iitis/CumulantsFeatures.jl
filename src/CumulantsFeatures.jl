@@ -7,6 +7,7 @@ module CumulantsFeatures
   using LinearAlgebra
   using SharedArrays
   using CumulantsUpdates
+  #using DistributedArrays
   import SymmetricTensors: issymetric, getblock, pyramidindices
 
   include("optimizationalgorithms.jl")

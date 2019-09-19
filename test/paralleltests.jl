@@ -72,7 +72,7 @@ end
         @time begin X = unfold(Array(t), 1)
         M = X*transpose(X)
         end
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 
     @testset "m = 5, n = 40, d = 5" begin
@@ -80,7 +80,7 @@ end
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 
     @testset "m = 5, n = 37, d = 6" begin
@@ -88,7 +88,7 @@ end
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 
     @testset "m = 5, n = 26, d = 5" begin
@@ -96,7 +96,7 @@ end
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 
     @testset "m = 5, n = 25, d = 5" begin
@@ -104,7 +104,7 @@ end
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 
     @testset "m = 5, n = 29, d = 3" begin
@@ -112,7 +112,7 @@ end
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 
     @testset "m = 4, n = 12, d = 3" begin
@@ -120,6 +120,6 @@ end
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-6)
+        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 end
