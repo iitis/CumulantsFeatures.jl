@@ -1,17 +1,21 @@
+#!/usr/bin/env julia
+
 using Distributed
-using ArgParse
+using Random
+using LinearAlgebra
 procs_id = addprocs(8)
+using DatagenCopulaBased
 @everywhere using Distributions
 @everywhere using Cumulants
-@everywhere using SymmetricTensors
+using SymmetricTensors
+using CumulantsFeatures
 using JLD2
 using FileIO
-using Random
-
+using ArgParse
 @everywhere import CumulantsFeatures: reduceband
 @everywhere using DatagenCopulaBased
 @everywhere using CumulantsFeatures
-@everywhere cut_order(x) = (x->x[3]).(x)
+
 
 
 function main(args)
@@ -29,15 +33,17 @@ function main(args)
   @everywhere t = 100_000
   @everywhere n = 50
   @everywhere malf_size = 10
-  data_dir = "jkfsdata_select"
-  test_number = 25
-  filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$t.jld2"
+  @everywhere a = 1_000
+  data_dir = ""
+  test_number = 3
+  filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
 
   data = Dict{String, Any}("variables_no" => n,
                          "sample_number" => t,
                          "ν" => ν,
                          "test_number" => test_number,
                          "malf_size" => malf_size,
+                         "a" => a,
                          "data" => Dict{String, Dict{String,Any}}())
 
 
@@ -55,35 +61,27 @@ function main(args)
       println(" > $m ($ν)")
       malf = randperm(n)[1:malf_size]
       Σ = cormatgen_rand(n)
-      samples_orig = Array(rand(MvNormal(Σ), t)')
+      samples_orig = rand(MvNormal(Σ), t)'
 
       versions = [(x->x, "original"),
-                  (x->gcop2tstudent(x, malf, ν), "malf")]
+                  (x->vcat(gcop2tstudent(x[1:a, :], malf, ν), x[a+1:end, :]), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
                                    "cor_source" => Σ)
 
       data_dict = @distributed (merge) for (sampler, label)=versions
         println(label)
-        samples = Array(sampler(samples_orig))
-        Σ_malf = SymmetricTensor(cov(samples))
-        cum = cumulants(samples, 4)
-        bands2 = cut_order(cumfsel(Σ_malf))
-        bands3 = cut_order(cumfsel(cum[2], cum[3], "hosvd"))
-        bands4 = cut_order(cumfsel(cum[2], cum[4], "hosvd"))
-        bands4n = cut_order(cumfsel(cum[2], cum[4], "norm", n-1))
-        bands4n = vcat(bands4n, setdiff(collect(1:n), bands4n))
+        samples = sampler(samples_orig)
+        Σ_malf = cov(samples)
         Dict("cor_$label" => Σ_malf,
-             "bands_MEV_$label" => bands2,
-             "bands_JSBS_$label" => bands3,
-             "bands_JKFS_$label" => bands4,
-             "bands_JKN_$label" => bands4n)
+             "x_$label" => samples)
       end
 
       data["data"]["$m"] = merge(cur_dict, data_dict)
       save("$data_dir/$filename", data)
     end
   end
+
 end
 
 main(ARGS)
