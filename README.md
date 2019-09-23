@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/iitis/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/iitis/CumulantsFeatures.jl)
 [![Coverage Status](https://coveralls.io/repos/github/iitis/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/CumulantsFeatures.jl?branch=master)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3339299.svg)](https://doi.org/10.5281/zenodo.3339299)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3454453.svg)](https://doi.org/10.5281/zenodo.3454453)
 
 CumulantsFeatures.jl provides multivariate cumulants based algorithms used to select a features subset or detect an outlier subset out of realisations of multivariate data.
 In both cases,the ordinary data subset is assumed to be modelled by the Gaussian multivariate distribution, while the outlier data subset is assumed to be modelled by the non-Gaussian multivariate distribution.
