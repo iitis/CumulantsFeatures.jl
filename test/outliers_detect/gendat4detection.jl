@@ -84,7 +84,7 @@ function main(args)
       samples_orig = rand(MvNormal(Σ), t)'
 
       versions = [(x->gmarg2t(x[:,:], νu), "original"),
-                  (x->vcat(gmarg2t(gcop2tstudent(x[1:a, :], malf, ν), νu), x[a+1:end, :]), "malf")]
+                  (x->gmarg2t(vcat(gcop2tstudent(x[1:a, :], malf, ν), x[a+1:end, :], νu)), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
                                    "cor_source" => Σ)
