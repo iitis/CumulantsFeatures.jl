@@ -53,7 +53,7 @@ function main(args)
   @everywhere t = 100_000
   @everywhere n = 50
   @everywhere malf_size = 10
-  @everywhere a = 100
+  @everywhere a = 1_000
   data_dir = "."
   test_number = 3
   filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
@@ -84,7 +84,7 @@ function main(args)
       samples_orig = rand(MvNormal(Σ), t)'
 
       versions = [(x->gmarg2t(x, νu), "original"),
-                  (x->vcat(gmarg2t(gcop2tstudent(x[1:a, :], νu), malf, ν), x[a+1:end, :]), "malf")]
+                  (x->vcat(gmarg2t(gcop2tstudent(x[1:a, :], malf, ν), νu), x[a+1:end, :]), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
                                    "cor_source" => Σ)
