@@ -11,6 +11,7 @@ using Random
 @everywhere import CumulantsFeatures: reduceband
 @everywhere using DatagenCopulaBased
 @everywhere using CumulantsFeatures
+@everywhere using HypothesisTests
 @everywhere cut_order(x) = (x->x[3]).(x)
 
 
@@ -25,6 +26,7 @@ using Random
     pvalue(ExactOneSampleKSTest(u,Uniform(0,1)))>0.0001 || throw(AssertionError("$i marg. not unif."))
     Y[:,i] = quantile.(TDist(nu), u)
   end
+  return Y
 end
 
 function main(args)
