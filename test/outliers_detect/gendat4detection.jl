@@ -3,7 +3,7 @@
 using Distributed
 using Random
 using LinearAlgebra
-procs_id = addprocs(8)
+procs_id = addprocs(4)
 using DatagenCopulaBased
 @everywhere using Distributions
 @everywhere using Cumulants
@@ -53,7 +53,7 @@ function main(args)
   @everywhere t = 100_000
   @everywhere n = 50
   @everywhere malf_size = 10
-  @everywhere a = 1_000
+  @everywhere a = 100
   data_dir = "."
   test_number = 3
   filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
