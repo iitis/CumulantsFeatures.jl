@@ -126,6 +126,8 @@ function main(args)
   r = load("roc"*str)["roc"]
   rr = load("rocrx"*str)["roc"]
   h, rx = plotdet(r, rr, 1, ν)
+  print(h)
+  print(rx)
   plotauc(h, rx, ν)
 end
 
