@@ -1,6 +1,6 @@
 using Distributed
 using ArgParse
-procs_id = addprocs(8)
+procs_id = addprocs(4)
 @everywhere using Distributions
 @everywhere using Cumulants
 @everywhere using SymmetricTensors
@@ -34,7 +34,7 @@ function main(args)
     default = 6
     help = "the number of degrees of freedom for the t-Student copula"
     arg_type = Int
-    
+
      "--nuu", "-u"
     default = 6
     help = "the number of degrees of freedom for the t-Student marginals"
@@ -42,7 +42,7 @@ function main(args)
   end
   parsed_args = parse_args(s)
   ν = parsed_args["nu"]
-  
+
   νu = parsed_args["nuu"]
 
   println(ν)
