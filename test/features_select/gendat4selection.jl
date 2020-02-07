@@ -14,27 +14,36 @@ using Random
 @everywhere cut_order(x) = (x->x[3]).(x)
 
 
-function gmarg2uniform(X::Matrix{T}) where T <: AbstractFloat
-  U = copy(X)
+function gmarg2t(X::Matrix{T}, nu::Int) where T <: AbstractFloat
+  Y = copy(X)
   for i = 1:size(X, 2)
     x = X[:,i]
     s = var(x)
     mu = mean(x)
     d = Normal(mu, s)
-    U[:,i] = cdf.(d, x)
+    u = cdf.(d, x)
+    pvalue(ExactOneSampleKSTest(u,Uniform(0,1)))>0.0001 || throw(AssertionError("$i marg. not unif."))
+    Y[:,i] = quantile.(TDist(nu), u)
   end
 end
 
 function main(args)
   s = ArgParseSettings("description")
   @add_arg_table s begin
-    "--nu", "-u"
-    default = 5
+    "--nu", "-n"
+    default = 6
     help = "the number of degrees of freedom for the t-Student copula"
+    arg_type = Int
+    
+     "--nuu", "-u"
+    default = 6
+    help = "the number of degrees of freedom for the t-Student marginals"
     arg_type = Int
   end
   parsed_args = parse_args(s)
   ν = parsed_args["nu"]
+  
+  νu = parsed_args["nuu"]
 
   println(ν)
   @everywhere t = 100_000
@@ -68,8 +77,8 @@ function main(args)
       Σ = cormatgen_rand(n)
       samples_orig = Array(rand(MvNormal(Σ), t)')
 
-      versions = [(x->gmarg2uniform(x), "original"),
-                  (x->gmarg2uniform(gcop2tstudent(x, malf, ν)), "malf")]
+      versions = [(x->gmarg2t(x, νu), "original"),
+                  (x->gmarg2t(gcop2tstudent(x, malf, ν), νu), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
                                    "cor_source" => Σ)
