@@ -14,7 +14,7 @@ using Random
 @everywhere cut_order(x) = (x->x[3]).(x)
 
 
-function gmarg2t(X::Matrix{T}, nu::Int) where T <: AbstractFloat
+@everywhere function gmarg2t(X::Matrix{T}, nu::Int) where T <: AbstractFloat
   Y = copy(X)
   for i = 1:size(X, 2)
     x = X[:,i]
