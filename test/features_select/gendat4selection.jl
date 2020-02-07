@@ -14,6 +14,17 @@ using Random
 @everywhere cut_order(x) = (x->x[3]).(x)
 
 
+function gmarg2uniform(X::Matrix{T}) where T <: AbstractFloat
+  U = copy(X)
+  for i = 1:size(X, 2)
+    x = X[:,i]
+    s = var(x)
+    mu = mean(x)
+    d = Normal(mu, s)
+    U[:,i] = cdf.(d, x)
+  end
+end
+
 function main(args)
   s = ArgParseSettings("description")
   @add_arg_table s begin
@@ -57,8 +68,8 @@ function main(args)
       Σ = cormatgen_rand(n)
       samples_orig = Array(rand(MvNormal(Σ), t)')
 
-      versions = [(x->x, "original"),
-                  (x->gcop2tstudent(x, malf, ν), "malf")]
+      versions = [(x->gmarg2uniform(x), "original"),
+                  (x->gmarg2uniform(gcop2tstudent(x, malf, ν)), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
                                    "cor_source" => Σ)
