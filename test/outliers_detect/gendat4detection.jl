@@ -15,21 +15,41 @@ using ArgParse
 @everywhere import CumulantsFeatures: reduceband
 @everywhere using DatagenCopulaBased
 @everywhere using CumulantsFeatures
+@everywhere using HypothesisTests
 
-
+@everywhere function gmarg2t(X::Matrix{T}, nu::Int) where T <: AbstractFloat
+  Y = copy(X)
+  for i = 1:size(X, 2)
+    x = X[:,i]
+    s = var(x)
+    mu = mean(x)
+    d = Normal(mu, s)
+    u = cdf.(d, x)
+    pvalue(ExactOneSampleKSTest(u,Uniform(0,1)))>0.0001 || throw(AssertionError("$i marg. not unif."))
+    Y[:,i] = quantile.(TDist(nu), u)
+  end
+  return Y
+end
 
 function main(args)
   s = ArgParseSettings("description")
   @add_arg_table s begin
-    "--nu", "-u"
+    "--nu", "-n"
     default = 5
     help = "the number of degrees of freedom for the t-Student copula"
+    arg_type = Int
+
+    "--nuu", "-u"
+    default = 5
+    help = "the number of degrees of freedom for the t-Student marginal"
     arg_type = Int
   end
   parsed_args = parse_args(s)
   ν = parsed_args["nu"]
+  νu = parsed_args["nuu"]
 
   println(ν)
+  println(νu)
   @everywhere t = 100_000
   @everywhere n = 50
   @everywhere malf_size = 10
@@ -63,8 +83,8 @@ function main(args)
       Σ = cormatgen_rand(n)
       samples_orig = rand(MvNormal(Σ), t)'
 
-      versions = [(x->x, "original"),
-                  (x->vcat(gcop2tstudent(x[1:a, :], malf, ν), x[a+1:end, :]), "malf")]
+      versions = [(x->gmarg2t(x, νu), "original"),
+                  (x->vcat(gmarg2t(gcop2tstudent(x[1:a, :], νu), malf, ν), x[a+1:end, :]), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
                                    "cor_source" => Σ)
