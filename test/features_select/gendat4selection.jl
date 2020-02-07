@@ -52,8 +52,8 @@ function main(args)
   @everywhere n = 50
   @everywhere malf_size = 10
   data_dir = "."
-  test_number = 25
-  filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$t.jld2"
+  test_number = 10
+  filename = "tstudent_$(ν)_marg_$(νu)-t_size-$(n)_malfsize-$malf_size-t_$t.jld2"
 
   data = Dict{String, Any}("variables_no" => n,
                          "sample_number" => t,

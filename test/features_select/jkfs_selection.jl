@@ -90,7 +90,7 @@ function plotdata(plot_data, data_parts_label, ν, malf_size, var_number, repeat
   #data_y = map(i-> theoretical(var_number, malf_size, i), data_x)
   data_y = los(var_number, malf_size, malf_size+δ)[1]
   plot(data_x, data_y, "--x", label="rand choice", color = "black", linewidth = 1., markersize = 3.)
-  if ((ν == 10) * (δ == 0))
+  if true
     ax[:legend](fontsize = 4.5, loc = 2, ncol = 2)
   end
   subplots_adjust(left = 0.15, bottom = 0.16)
