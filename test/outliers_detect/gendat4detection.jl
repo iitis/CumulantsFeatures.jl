@@ -7,7 +7,7 @@ procs_id = addprocs(4)
 using DatagenCopulaBased
 @everywhere using Distributions
 @everywhere using Cumulants
-using SymmetricTensors
+@everywhere using SymmetricTensors
 using CumulantsFeatures
 using JLD2
 using FileIO
@@ -56,7 +56,7 @@ function main(args)
   @everywhere a = 1_000
   data_dir = "."
   test_number = 3
-  filename = "tstudent_$(ν)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
+  filename = "tstudent_$(ν)_marg$(νu)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
 
   data = Dict{String, Any}("variables_no" => n,
                          "sample_number" => t,
@@ -83,7 +83,7 @@ function main(args)
       Σ = cormatgen_rand(n)
       samples_orig = rand(MvNormal(Σ), t)'
 
-      versions = [(x->gmarg2t(x, νu), "original"),
+      versions = [(x->gmarg2t(x[:,:], νu), "original"),
                   (x->vcat(gmarg2t(gcop2tstudent(x[1:a, :], malf, ν), νu), x[a+1:end, :]), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
