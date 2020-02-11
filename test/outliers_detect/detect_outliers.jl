@@ -7,10 +7,10 @@ using ArgParse
 using Distributions
 using CumulantsFeatures
 using LinearAlgebra
-addprocs(6)
+addprocs(3)
 @everywhere using CumulantsFeatures
 #using StatsBase
-using ROCAnalysis
+#using ROCAnalysis
 using PyCall
 @pyimport matplotlib as mpl
 @pyimport matplotlib.colors as mc
@@ -18,85 +18,168 @@ mpl.rc("text", usetex=true)
 mpl.use("Agg")
 using PyPlot
 
+"""
+rand_withour_return(s::Int, b::Int)
+
+  out of numbers 1,2,3 , ... s returns no_pools random iterms without replacements
+
+"""
+function rand_withour_return(s::Int, no_pools::Int)
+  data = collect(1:s)
+  ret = []
+  for i in 1:no_pools
+    temp = rand(data)
+    data = filter!(i -> i != temp, data)
+    ret = vcat(ret, temp)
+  end
+  ret
+end
+
+"""
+random_choice(data::Dict, β::Int)
+
+Given data Dict and the parameter no_pools
+returns a vector of random choice detections: [TruePositive, FalsePosotiveRate]
+
+FalsePosotiveRate is the probability of type 1 error.
+
+"""
+
+function random_choice(data::Dict, no_pools::Int)
+  no_cases = length(data["data"])
+  ret = zeros(no_cases, 2)
+  println("random_choice detector")
+  for c=1:no_cases
+    println("case n. = ", c)
+    s = size(data["data"]["$c"]["x_malf"],1)
+    detected = rand_withour_return(s, no_pools)
+    no_positive = data["a"]
+    # it is assumed by the random data generation
+    #that outliers are at the beginning of data set
+    theshold = no_positive
+    no_true_detected = count(detected .<= theshold)
+    no_false_detercted = count(detected .> theshold)
+
+    sample_size = size(data["data"]["$c"]["x_malf"], 1)
+    no_negative = sample_size-no_positive
+    truePositiveRate = no_true_detected/no_positive
+    #type 1 error
+    flasePositiveRate = no_false_detercted/no_negative
+    ret[c,:] = [truePositiveRate, flasePositiveRate]
+  end
+  ret
+end
+
+
+"""
+detection_hosvd(data::Dict, β::Float64, r::Int = 3)
+
+Given data Dict and the parameter β (threshold) and r (number of direction data
+are projected) returns a vector of hosvd detection:
+
+[TruePositive, FalsePosotiveRate]
+
+"""
 
 function detection_hosvd(data::Dict, β::Float64, r::Int = 3)
-  ret = 0.
-  l = length(data["data"])
-  de = zeros(l, 2)
-  for m=1:l
-    println("hosvd detector")
-    println(m)
-    d = hosvdc4detect(data["data"]["$m"]["x_malf"], β, r)
-    aa = data["a"]
-    detected = count(findall(d) .<= aa)
-    falsep = count(findall(d) .> aa)
-    de[m,:] = [detected/aa, falsep/(detected+falsep)]
+  no_cases = length(data["data"])
+  ret = zeros(no_cases, 2)
+  println("hosvd detector")
+  for c=1:no_cases
+    println("case no = ", c)
+    detected = hosvdc4detect(data["data"]["$c"]["x_malf"], β, r)
+
+    no_positive = data["a"]
+    # it is assumed by the random data generation
+    #that outliers are at the beginning of data set
+    theshold = no_positive
+
+    no_true_detected = count(findall(detected) .<= theshold)
+    no_false_detected = count(findall(detected) .> theshold)
+
+    sample_size = size(data["data"]["$c"]["x_malf"], 1)
+    no_negative = sample_size-no_positive
+    truePositiveRate = no_true_detected/no_positive
+    #type 1 error
+    flasePositiveRate = no_false_detected/no_negative
+    ret[c,:] = [truePositiveRate, flasePositiveRate]
   end
-  de
+  ret
 end
 
+"""
+  detection_rx(data::Dict, α::Float64 = 0.99)
+
+  Given data Dict and the parameter α ("probability" threshold)
+   returns a vector of RX detection:
+
+  [TruePositive, FalsePosotiveRate]
+
+"""
 function detection_rx(data::Dict, α::Float64 = 0.99)
-  ret = 0.
-  l = length(data["data"])
-  de = zeros(l, 2)
-  for m=1:l
-    println(m)
-    d = findall(rxdetect(data["data"]["$m"]["x_malf"], α))
-    aa = data["a"]
-    detected = count(d .<= aa)
-    falsep = count(d .> aa)
-    de[m,:] = [detected/aa, falsep/(detected+falsep)]
+
+  no_cases = length(data["data"])
+  ret = zeros(no_cases, 2)
+  print("rx detector")
+  for c=1:no_cases
+    println("case no = ", c)
+    detected = rxdetect(data["data"]["$c"]["x_malf"], α)
+
+    no_positive = data["a"]
+    # it is assumed by the random data generation
+    #that outliers are at the beginning of data set
+    theshold = no_positive
+
+    no_true_detected = count(findall(detected) .<= theshold)
+    no_false_detected = count(findall(detected) .> theshold)
+
+    sample_size = size(data["data"]["$c"]["x_malf"], 1)
+    no_negative = sample_size-no_positive
+    truePositiveRate = no_true_detected/no_positive
+    #type 1 error
+    flasePositiveRate = no_false_detected/no_negative
+    ret[c,:] = [truePositiveRate, flasePositiveRate]
   end
-  de
+  ret
 end
 
+"""
+  plotdet(hosvd, rx, rand, nu::Int = 6)
 
-function plotdet(r, rx, j::Int = 3, nu::Int = 5)
+plot results of detection
+"""
+
+function plotdet(hosvd, rx, rand, nu::Int = 6)
   mpl.rc("font", family="serif", size = 7)
   fig, ax = subplots(figsize = (2.5, 2.))
-  ret = zeros(size(r[1],1))
-  retrx = copy(ret)
-  a = ["x-", "d-"]
-  for i in 1:size(r[1],1)
-    x = [k[i,2] for k in r]
-    y = [k[i,1] for k in r]
-    xr = [k[i,2] for k in rx]
-    yr = [k[i,1] for k in rx]
-    ret[i] = auc(x,y)
-    retrx[i] = auc(xr,yr)
-    if i == j
-      p = sortperm(x)
-      p1 = sortperm(xr)
-      x = x[p]
-      y = y[p]
-      xr = xr[p1]
-      yr = yr[p1]
-      plt[:semilogx](x, y, "--", label = "Alg. 1", color = "blue")
-      plt[:semilogx](xr, yr, "--", label = "RX", color = "red")
-      ax[:legend](fontsize = 6., loc = 2, ncol = 2)
-      subplots_adjust(left = 0.15, bottom = 0.16)
-      show()
-      xlabel("false alarm probability", labelpad = -1.0)
-      ylabel("detection probability", labelpad = 0.)
-      savefig("$(nu)_$(j)detect.pdf")
-    end
+  # raking each data case
+  for i in 1:size(hosvd[1],1)
+    xh = [k[i,2] for k in hosvd]
+    yh = [k[i,1] for k in hosvd]
+
+    # excluding [0., 0.] case where the parameter is out of range
+    j = (xh .> 0.) .* (yh .> 0.)
+    xh = xh[j]
+    yh = yh[j]
+
+    xrx = [k[i,2] for k in rx]
+    yrx = [k[i,1] for k in rx]
+
+    xrand = [k[i,2] for k in rand]
+    yrand = [k[i,1] for k in rand]
+
+    plt[:plot](xh, yh, "o-", label = "hosvd", color = "blue")
+    plt[:plot](xrx, yrx, "d-", label = "RX", color = "red")
+    plt[:plot](xrand, yrand, "x-", label = "random", color = "gray")
+    ax[:legend](fontsize = 6., loc = 2, ncol = 2)
+    subplots_adjust(left = 0.15, bottom = 0.16)
+    show()
+    xlabel("False Positive Rate (type 1 error rate)", labelpad = -1.0)
+    ylabel("True Positive Rate", labelpad = 0.)
+    savefig("$(nu)_$(i)detect.pdf")
+    PyPlot.clf()
   end
-  ret, retrx
 end
-
-function plotauc(h, rx, nu = 10)
-  x = collect(1:1:size(h,1))
-  mpl.rc("font", family="serif", size = 7)
-  fig, ax = subplots(figsize = (2.5, 2.))
-  plot(x, h, "--", label = "Alg. 1", color = "blue")
-  plot(x, rx, "--", label = "RX", color = "red")
-  ax[:legend](fontsize = 6., loc = 2, ncol = 2)
-  subplots_adjust(left = 0.15, bottom = 0.16)
-  xlabel("no. experiment", labelpad = -1.0)
-  ylabel("AUC", labelpad = 0.)
-  savefig("$(nu)AUC.pdf")
-end
-
 
 function main(args)
   s = ArgParseSettings("description")
@@ -108,27 +191,41 @@ function main(args)
   parsed_args = parse_args(s)
   str = parsed_args["file"]
   data = load(str)
+  # copulas parameter for outliers
   ν = data["ν"]
 
+  if !isfile("roc_rand"*str)
+    no_pools = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 50, 10]
+    print("number random= ", size(no_pools))
+    roc = [random_choice(data, k) for k in no_pools]
+    save("roc_rand"*str, "roc", roc, "ks", no_pools)
+    print(roc)
+  end
+
   if !isfile("roc"*str)
-    ks = vcat(collect(6.:-0.15:1.2))
-    roc = [detection_hosvd(data, k) for k in ks]
-    save("roc"*str, "roc", roc, "ks", ks)
+    threshold = [8., 6., 4., 3., 2., 1.8, 1.55, 1.40, 1.30, 1.27, 1.25, 1.24, 1.23, 1.22, 1.21]
+    print("number hosvd= ", size(threshold))
+    roc = [detection_hosvd(data, k) for k in  threshold]
+    print(threshold)
+    print(roc)
+    save("roc"*str, "roc", roc, "ks",  threshold)
   end
 
   if !isfile("rocrx"*str)
-    as = vcat(collect(0.45:0.03:0.99), collect(0.991:0.001:0.999), [0.99925, 0.9995, 0.99975, 0.9999, 0.999925, 0.99995, 0.999975, 0.99999, 0.999999, 0.9999999])
-    as = as[end:-1:1]
+    as = vcat([0.001, 0.003, 0.01], collect(0.02:0.1:0.44), collect(0.45:0.1:0.85), [0.9, 0.95, 0.97, 0.99, 0.997, 0.999])
+    print("number rx= ", size(as))
     rocrx = [detection_rx(data, k) for k in as]
+
+    print(as)
+    print(rocrx)
     save("rocrx"*str, "roc", rocrx, "alpha", as)
   end
 
   r = load("roc"*str)["roc"]
-  rr = load("rocrx"*str)["roc"]
-  h, rx = plotdet(r, rr, 1, ν)
-  print(h)
-  print(rx)
-  plotauc(h, rx, ν)
+  rx = load("rocrx"*str)["roc"]
+  rr = load("roc_rand"*str)["roc"]
+  plotdet(r, rx, rr, ν)
+
 end
 
 main(ARGS)

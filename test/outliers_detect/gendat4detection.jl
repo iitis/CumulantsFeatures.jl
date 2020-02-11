@@ -17,7 +17,11 @@ using ArgParse
 @everywhere using CumulantsFeatures
 @everywhere using HypothesisTests
 
+Random.seed!(1234)
+
+
 @everywhere function gmarg2t(X::Matrix{T}, nu::Int) where T <: AbstractFloat
+  # transform univariate gasussian marginals into t-Student with nu degrees of freedom
   Y = copy(X)
   for i = 1:size(X, 2)
     x = X[:,i]
@@ -35,12 +39,12 @@ function main(args)
   s = ArgParseSettings("description")
   @add_arg_table s begin
     "--nu", "-n"
-    default = 5
+    default = 6
     help = "the number of degrees of freedom for the t-Student copula"
     arg_type = Int
 
     "--nuu", "-u"
-    default = 5
+    default = 6
     help = "the number of degrees of freedom for the t-Student marginal"
     arg_type = Int
   end
@@ -48,13 +52,18 @@ function main(args)
   ν = parsed_args["nu"]
   νu = parsed_args["nuu"]
 
-  println(ν)
-  println(νu)
-  @everywhere t = 100_000
+  println("copula's degreen of freedom = ", ν)
+  println("matginal's degree of freedom = ", νu)
+  # parameters, data sie
+  @everywhere t = 1000
+  # no of marginals
   @everywhere n = 50
+  # no of marginals with t-Student copula
   @everywhere malf_size = 10
-  @everywhere a = 1_000
+  # outliers places on the beginning of data
+  @everywhere a = 100
   data_dir = "."
+  # number of generated data sets
   test_number = 3
   filename = "tstudent_$(ν)_marg$(νu)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
 
@@ -83,8 +92,15 @@ function main(args)
       Σ = cormatgen_rand(n)
       samples_orig = rand(MvNormal(Σ), t)'
 
-      versions = [(x->gmarg2t(x[:,:], νu), "original"),
-                  (x->gmarg2t(vcat(gcop2tstudent(x[1:a, :], malf, ν), x[a+1:end, :]), νu), "malf")]
+      # gcop2tstudent(x[1:a, :], malf, ν) - outliers, given gaussian multivariate copula is changed for Gaussian
+
+      # x[a+1:end, :] - ordinary data
+
+      # gmarg2t( ..., νu) - univariate marginals are changed to t-Student
+
+      # "malf" - dict key
+
+      versions = [(x->gmarg2t(vcat(gcop2tstudent(x[1:a, :], malf, ν), x[a+1:end, :]), νu), "malf")]
 
       cur_dict = Dict{String, Any}("malf" => malf,
                                    "cor_source" => Σ)
