@@ -203,7 +203,7 @@ function main(args)
   end
 
   if !isfile("roc"*str)
-    threshold = [8., 6., 4., 3., 2., 1.8, 1.55, 1.40, 1.30, 1.27, 1.25, 1.24, 1.23, 1.22, 1.21]
+    threshold = [8., 6., 5., 4., 3., 2.5, 2., 1.8, 1.6, 1.40, 1.30, 1.28]
     print("number hosvd= ", size(threshold))
     roc = [detection_hosvd(data, k) for k in  threshold]
     print(threshold)
@@ -212,7 +212,7 @@ function main(args)
   end
 
   if !isfile("rocrx"*str)
-    as = vcat([0.001, 0.003, 0.01], collect(0.02:0.1:0.44), collect(0.45:0.1:0.85), [0.9, 0.95, 0.97, 0.99, 0.997, 0.999])
+    as = vcat([0.0005, 0.002, 0.01], collect(0.02:0.1:0.85), [0.9, 0.99, 0.999, 0.9999, 0.99999])
     print("number rx= ", size(as))
     rocrx = [detection_rx(data, k) for k in as]
 

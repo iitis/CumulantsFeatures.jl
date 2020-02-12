@@ -57,14 +57,14 @@ function main(args)
   # parameters, data sie
   @everywhere t = 1000
   # no of marginals
-  @everywhere n = 50
+  @everywhere n = 30
   # no of marginals with t-Student copula
-  @everywhere malf_size = 10
+  @everywhere malf_size = 15
   # outliers places on the beginning of data
   @everywhere a = 100
   data_dir = "."
   # number of generated data sets
-  test_number = 3
+  test_number = 5
   filename = "tstudent_$(ν)_marg$(νu)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
 
   data = Dict{String, Any}("variables_no" => n,
