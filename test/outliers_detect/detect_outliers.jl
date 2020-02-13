@@ -7,8 +7,10 @@ using ArgParse
 using Distributions
 using CumulantsFeatures
 using LinearAlgebra
+using Cumulants
 addprocs(3)
 @everywhere using CumulantsFeatures
+@everywhere using Cumulants
 #using StatsBase
 #using ROCAnalysis
 using PyCall
@@ -176,10 +178,11 @@ function plotdet(hosvd, rx, rand, nu::Int = 6)
     show()
     xlabel("False Positive Rate (type 1 error rate)", labelpad = -1.0)
     ylabel("True Positive Rate", labelpad = 0.)
-    savefig("$(nu)_$(i)detect.pdf")
+    savefig("./pics/$(nu)_$(i)detect.pdf")
     PyPlot.clf()
   end
 end
+
 
 function main(args)
   s = ArgParseSettings("description")
@@ -194,36 +197,36 @@ function main(args)
   # copulas parameter for outliers
   ν = data["ν"]
 
-  if !isfile("roc_rand"*str)
+  if !isfile("./data/roc_rand"*str)
     no_pools = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 50, 10]
     print("number random= ", size(no_pools))
     roc = [random_choice(data, k) for k in no_pools]
-    save("roc_rand"*str, "roc", roc, "ks", no_pools)
+    save("./data/roc_rand"*str, "roc", roc, "ks", no_pools)
     print(roc)
   end
 
-  if !isfile("roc"*str)
+  if !isfile("./data/roc"*str)
     threshold = [8., 6., 5., 4., 3., 2.5, 2., 1.8, 1.6, 1.40, 1.30, 1.28]
     print("number hosvd= ", size(threshold))
     roc = [detection_hosvd(data, k) for k in  threshold]
     print(threshold)
     print(roc)
-    save("roc"*str, "roc", roc, "ks",  threshold)
+    save("./data/roc"*str, "roc", roc, "ks",  threshold)
   end
 
-  if !isfile("rocrx"*str)
+  if !isfile("./data/rocrx"*str)
     as = vcat([0.0005, 0.002, 0.01], collect(0.02:0.1:0.85), [0.9, 0.99, 0.999, 0.9999, 0.99999])
     print("number rx= ", size(as))
     rocrx = [detection_rx(data, k) for k in as]
 
     print(as)
     print(rocrx)
-    save("rocrx"*str, "roc", rocrx, "alpha", as)
+    save("./data/rocrx"*str, "roc", rocrx, "alpha", as)
   end
 
-  r = load("roc"*str)["roc"]
-  rx = load("rocrx"*str)["roc"]
-  rr = load("roc_rand"*str)["roc"]
+  r = load("./data/roc"*str)["roc"]
+  rx = load("./data/rocrx"*str)["roc"]
+  rr = load("./data/roc_rand"*str)["roc"]
   plotdet(r, rx, rr, ν)
 
 end
