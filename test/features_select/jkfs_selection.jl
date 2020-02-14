@@ -12,18 +12,10 @@ mpl.use("Agg")
 using PyPlot
 
 
-#ν = 30
-#data = load("tstudent_$ν-t_size-50_malfsize-5-t_100000.jld")
-
-
 function union_size(list1::Vector, list2::Vector)
   return length(list1 ∩ list2)
 end
 
-#malf_size = data["malf_size"]
-#var_number = data["variables_no"]
-#t = data["sample_number"]
-#repeating = data["test_number"]
 
 function features_selection_results(data::Dict, d::Int = 0)
   malf_size = data["malf_size"]
@@ -31,7 +23,6 @@ function features_selection_results(data::Dict, d::Int = 0)
 
   labels = ["malf"]
   algorithms = ["MEV", "JKN", "JSBS", "JKFS"]
-  #algorithms = ["MEV", "JKFS"]
   data_parts_label = sort([ "bands_$(alg)_$l" for l=labels for alg=algorithms])
   plot_data = Dict()
   for label = data_parts_label
@@ -48,8 +39,6 @@ plot_data, data_parts_label
 end
 
 
-#keys_sorted = sort(collect(keys(plot_data)))
-#hcat([plot_data[k] for k=keys_sorted]...)
 
 function theoretical(sizedata::Int, malfsize::Int, found::Int)
   binomial(malfsize, found)*binomial(sizedata-malfsize, malfsize-found)/binomial(sizedata,malfsize)
@@ -87,7 +76,6 @@ function plotdata(plot_data, data_parts_label, ν, malf_size, var_number, repeat
     plot(data_x, data_y/repeating, p[i], label=replace(d, "_malf"=>""), color = cols[i], linewidth = 0.8, markersize = 3.)
   end
   data_x = 0:malf_size
-  #data_y = map(i-> theoretical(var_number, malf_size, i), data_x)
   data_y = los(var_number, malf_size, malf_size+δ)[1]
   plot(data_x, data_y, "--x", label="rand choice", color = "black", linewidth = 1., markersize = 3.)
   if true

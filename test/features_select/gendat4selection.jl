@@ -33,18 +33,17 @@ function main(args)
   s = ArgParseSettings("description")
   @add_arg_table s begin
     "--nu", "-n"
-    default = 6
+    default = 4
     help = "the number of degrees of freedom for the t-Student copula"
     arg_type = Int
 
      "--nuu", "-u"
-    default = 6
+    default = 25
     help = "the number of degrees of freedom for the t-Student marginals"
     arg_type = Int
   end
   parsed_args = parse_args(s)
   ν = parsed_args["nu"]
-
   νu = parsed_args["nuu"]
 
   println(ν)
