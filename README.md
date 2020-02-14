@@ -207,12 +207,17 @@ In folder `test\outliers_detect` and `test\features_select` there are the Julia 
 
 ### Features selection
 
-The executable file `gendat4selection.jl` generates multivariate data with non-Gaussian subset of marginals modelled by the t-Student copula. This file is parametrised by an integer being a number of degrees of freedom of the t-Student copula. Returns a `.jld2` file with data. Run `jkfs_selection.jl` to achieve results of features selection given different methods.
+In `./test/features_select` the executable file `gendat4selection.jl` generates multivariate data where the subset of `infomrative` margianls is modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `4`). All univariate marginal distributions are t-Student with `-nuu` degrees of freedom (by defalt `25`).
+
+
+The `gendat4selection.jl` returns a `.jld2` file with data. Run `jkfs_selection.jl` on this file to display the characteristics of features selection plotted in `./test/features_select/pics/`
 
 ### Outlier detection
 
-The executable file `gendat4detection.jl` generates multivariate data with non-Gaussian outliers subset of realisations modeled by the t-Student copula.
- This file is parametrised by an integer being a number of degrees of freedom of the t-Student copula. Returns a `.jld2` file with data. Run `detect_outliers.jl` to detect outliers and compare the "HOSVD" based method with the "RX" detector.
+In `./test/outliers_detect/` the executable file `gendat4detection.jl` generates multivariate data with outliers modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `6`). All univariate marginal distributions are t-Student with `-nuu` degrees of freedom (by defalt `6`).
+
+The `gendat4detection.jl` returns a `.jld2` file with data. Run `detect_outliers.jl` on this file to display the characteristics of outlier detection plotted in `./test/outliers_detect/pics/'
+`
 
 # Citing this work
 
