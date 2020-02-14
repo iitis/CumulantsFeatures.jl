@@ -35,8 +35,8 @@ The "norm" uses the norm of the higher-order cumulant's tensor, this is a benchm
 
 The "mev" uses only the corrlelation matrix, see: C. Sheffield, 'Selecting band combinations from multispectral data', Photogrammetric Engineering and Remote Sensing, vol. 51 (1985)
 
-The "hosvd" uses the Higher Order Singular Value decomposition of cumulant's tensor to extract information. For the `N=3` case, the Joint Skewness Band Selection (JSBS), see X. Geng, K. Sun, L. Ji, H. Tang & Y. Zhao 'Joint Skewness and Its Application in Unsupervised Band Selection for Small Target Detection Sci Rep. vol.5 (2015) (https://www.nature.com/articles/srep09915). For the JSBS application in biomedical data analysis see: M. Domino, K. Domino, Z. Gajewski, 'An application of higher order multivariate cumulants in modelling of myoelectrical activity of porcine uterus during early pregnancy', Biosystems (2018), (https://doi.org/10.1016/j.biosystems.2018.10.019). For `N = 4` and `N = 5` see also P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images', [arXiv:1808.03513]
-) (2018). 
+The "hosvd" uses the Higher Order Singular Value decomposition of cumulant's tensor to extract information. For the `N=3` case, the Joint Skewness Band Selection (JSBS), see X. Geng, K. Sun, L. Ji, H. Tang & Y. Zhao 'Joint Skewness and Its Application in Unsupervised Band Selection for Small Target Detection Sci Rep. vol.5 (2015) (https://www.nature.com/articles/srep09915). For the JSBS application in biomedical data analysis see: M. Domino, K. Domino, Z. Gajewski, 'An application of higher order multivariate cumulants in modelling of myoelectrical activity of porcine uterus during early pregnancy', Biosystems (2018), (https://doi.org/10.1016/j.biosystems.2018.10.019). For `N = 4` and `N = 5` see also P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images' (2018) (https://arxiv.org/abs/1808.03513). 
+
 ```julia
 
 julia> Random.seed!(42);
