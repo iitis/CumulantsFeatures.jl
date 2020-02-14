@@ -5,10 +5,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/iitis/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/CumulantsFeatures.jl?branch=master)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3454453.svg)](https://doi.org/10.5281/zenodo.3454453)
 
-CumulantsFeatures.jl provides multivariate cumulants based algorithms used to select a features subset or detect an outlier subset out of realisations of multivariate data.
-In both cases,the ordinary data subset is assumed to be modelled by the Gaussian multivariate distribution, while the outlier data subset is assumed to be modelled by the non-Gaussian multivariate distribution.
-The algorithms handles `t` realisations of `n` variate data presented in the form of `t x n` matrix of Floats. In the case of features selection one has to compute multivariate cumulants first using
-Cumulants.jl.
+CumulantsFeatures.jl uses multivariate cumulants to provide the algorithms for the outliers detection and the features selection given the multivariate data represented in the form of `t x n` matrix of Floats.
+Here`t` numerates realisations, while `n` numerates number of marginals.
+
+Requires SymmetricTensors.jl Cumulants.jl and CumulantsUpdates.jl to compute and update multivariate cumulants of data.
 
 As of 24/09/2018 [@kdomino](https://github.com/kdomino) is the lead maintainer of this package.
 
@@ -20,22 +20,23 @@ Within Julia, run
 pkg> add CumulantsFeatures
 ```
 
-to install the files. Julia 1.0 or later is required. Requires SymmetricTensors Cumulants and CumulantsUpdates modules.
-
 ## Features selection
 
-Given the `Σ`- covariance matrix of data and `c` - the `N`-th cumulant's tensor
-select `k` marginals with low `N`'th order dependencies by running:
+Given `n`-variate data,  iteratively determines its `k`-marginals that are little informative.
+Uses `C2`- the covariance matrix, and `CN` - the `N`th cumulant's tensor, both in the `SymmetricTensor` type, see SymmetricTensors.jl. Uses one of the following optimisation functions
+`f`: `["hosvd", "norm", "mev"].
 
 ```julia
 
-julia> function cumfsel(Σ::SymmetricTensor{T,2}, c::SymmetricTensor{T, N}, f::String, k::Int = Σ.dats) where {T <: AbstractFloat, N}
+julia> function cumfsel(C2::SymmetricTensor{T,2}, CN::SymmetricTensor{T, N}, f::String, k::Int = n) where {T <: AbstractFloat, N}
 
 ```
-To compute the covariance matrix and `N`-th cumulant's tensor use Cumulants.jl
-`Σ.dats` is a size of the `Σ` matrix stored in the `SymmetricTensor` type, see SymmetricTensors.jl.
-The `f` is the optimization function, `["hosvd", "norm", "mev"]` are supported. The "hosvd" uses the Higher Order Singular Value decomposition approximation of the higher order cumulant's tensor to extract information. While using "hosvd" we have the following family of methods. For `N=3` the Joint Skewness Band Selection (JSBS) - see X. Geng, K. Sun, L. Ji, H. Tang & Y. Zhao 'Joint Skewness and Its Application in Unsupervised Band Selection for Small Target Detection Sci Rep. vol.5 (2015) (https://www.nature.com/articles/srep09915). For the JSBS application in biomedical data analysis see: M. Domino, K. Domino, Z. Gajewski, 'An application of higher order multivariate cumulants in modelling of myoelectrical activity of porcine uterus during early pregnancy', Biosystems (2018), (https://doi.org/10.1016/j.biosystems.2018.10.019). For `N = 4` the Joint Kurtosis Features Selection (JKFS) - see K. Domino: 'Multivariate cumulants in features selection and outlier detection for financial data analysis', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541) (2018). For `N = 5` the Joint Hyper Kurtosis Features Selection (JHKFS). For application of HOSVD based methods see also P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images', [arXiv:1808.03513] (https://arxiv.org/abs/1808.03513) (2018). The "norm" uses the norm of the higher order cumulant's tensor, this is a benchmark method for comparison. The "mev" uses only second order correlations, see: C. Sheffield, 'Selecting band combinations from multispectral data', Photogrammetric Engineering and Remote Sensing, vol. 51 (1985)
+The "norm" uses the norm of the higher-order cumulant's tensor, this is a benchmark method for comparison. 
 
+The "mev" uses only the corrlelation matrix, see: C. Sheffield, 'Selecting band combinations from multispectral data', Photogrammetric Engineering and Remote Sensing, vol. 51 (1985)
+
+The "hosvd" uses the Higher Order Singular Value decomposition of cumulant's tensor to extract information. For the `N=3` case, the Joint Skewness Band Selection (JSBS), see X. Geng, K. Sun, L. Ji, H. Tang & Y. Zhao 'Joint Skewness and Its Application in Unsupervised Band Selection for Small Target Detection Sci Rep. vol.5 (2015) (https://www.nature.com/articles/srep09915). For the JSBS application in biomedical data analysis see: M. Domino, K. Domino, Z. Gajewski, 'An application of higher order multivariate cumulants in modelling of myoelectrical activity of porcine uterus during early pregnancy', Biosystems (2018), (https://doi.org/10.1016/j.biosystems.2018.10.019). For `N = 4` and `N = 5` see also P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images', [arXiv:1808.03513]
+) (2018). 
 ```julia
 
 julia> Random.seed!(42);
