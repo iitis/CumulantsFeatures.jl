@@ -201,7 +201,7 @@ julia> rxdetect(x, 0.95)
   true
   true
 ```
-## Data generation and tests
+## Tests on artificial data.
 
 In folder `test\outliers_detect` and `test\features_select` there are the Julia executable files for testing features selection and outliers detection on artificial data.
 
