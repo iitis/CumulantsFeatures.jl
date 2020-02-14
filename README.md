@@ -64,12 +64,13 @@ julia> cumfsel(c[2], c[4], "hosvd")
 ```
 
 The output is the Array of tuples `(ind::Array{Bool}, fval::Float64, i::Int)`, each tuple corresponds to the one step
-of the features selection. Marginals are removed in the information hierarchy, starting from least informatve and ending on most infomrative.
+of the features selection. Marginals are removed in the information hierarchy, starting from the least informatve and ending on the most infomrative.
 
 The vector `ind` consist of `false` that determines the removed marginal, and `true` that determines the left marginal. 
 
-First tuple corresponds to the marginal with lowest `N`'th order dependencies with other marginals, while last tuple to the marginal with highest
-`N`'th order dependencies. The `k`'th array gives an outcome after `k` steps. Here `ind` shows `k` marginals that yields lowest `N`'th order dependencies, `fval` the value of the target function at `k`'th step and `i` numerates the marginal removed at step `k`.
+The `fval` is the value of the target function.
+
+The `i` numerates the marginal removed at the step `k`.
 
 To limit number of steps use the default parameter:
 
