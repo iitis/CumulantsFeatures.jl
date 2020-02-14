@@ -213,4 +213,7 @@ In folder `test\outliers_detect` and `test\features_select` there are Julia exec
 
 This project was partially financed by the National Science Centre, Poland – project number 2014/15/B/ST6/05204.
 
-While using `hosvdc4detect()` or `cumfsel()` please cite K. Domino: 'Multivariate cumulants in features selection and outlier detection for financial data analysis', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541).
+While using `hosvdc4detect()` please cite K. Domino: 'Multivariate cumulants in features selection and outlier detection for financial data analysis', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541).
+
+
+While using `cumfsel()` please cite P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images' (2018) (https://arxiv.org/abs/1808.03513).
