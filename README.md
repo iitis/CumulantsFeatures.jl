@@ -108,7 +108,7 @@ SymmetricTensor{Float64,2}(Union{Nothing, Array{Float64,2}}[[7.69432 4.9757; 4.9
 Parallel computation is supported
 ```
 
-## Detection
+## Outliers detection
 
 ### RX detector
 
