@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/iitis/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/CumulantsFeatures.jl?branch=master)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3454453.svg)](https://doi.org/10.5281/zenodo.3454453)
 
-CumulantsFeatures.jl uses multivariate cumulants to provide the algorithms for the outliers detection and the features selection given the multivariate data represented in the form of `t x n` matrix of Floats, `t` numerates realisations, while `n` numerates number of marginals.
+CumulantsFeatures.jl uses multivariate cumulants to provide the algorithms for the outliers detection and the features selection given the multivariate data represented in the form of `t x n` matrix of Floats, `t` numerates the realisations, while `n` numerates the marginals.
 
 Requires SymmetricTensors.jl Cumulants.jl and CumulantsUpdates.jl to compute and update multivariate cumulants of data.
 
@@ -19,6 +19,8 @@ Within Julia, run
 pkg> add CumulantsFeatures
 ```
 
+Parallel computation is supported
+
 ## Features selection
 
 Given `n`-variate data,  iteratively determines its `k`-marginals that are little informative.
@@ -30,7 +32,7 @@ Uses `C2`- the covariance matrix, and `CN` - the `N`th cumulant's tensor, both i
 julia> function cumfsel(C2::SymmetricTensor{T,2}, CN::SymmetricTensor{T, N}, f::String, k::Int = n) where {T <: AbstractFloat, N}
 
 ```
-The "norm" uses the norm of the higher-order cumulant's tensor, this is a benchmark method for comparison. 
+The "norm" uses the norm of the higher-order cumulant tensor, this is a benchmark method for comparison. 
 
 The "mev" uses only the corrlelation matrix, see: C. Sheffield, 'Selecting band combinations from multispectral data', Photogrammetric Engineering and Remote Sensing, vol. 51 (1985)
 
@@ -70,9 +72,9 @@ The vector `ind` consist of `false` that determines the removed marginal, and `t
 
 The `fval` is the value of the target function.
 
-The `i` numerates the marginal removed at the step `k`.
+The `i` numerates the marginal removed at the given step.
 
-To limit number of steps use the default parameter:
+To limit number of steps use the default parameter `k`:
 
 ```julia
 
@@ -92,14 +94,14 @@ julia> cumfsel(Σ::SymmetricTensor{T,2}, k::Int = Σ.dats)
 ```
 
 
-## The higher-order cross-correlations matrix
+## The higher-order cross-correlation matrix
 
 ```julia
 
   cum2mat(c::SymmetricTensor{T, N}) where {T <: AbstractFloat, N}
 
 ```
-Returns a matrix SymmetricTensor{T, 2} being a contraction of tensor c
+Returns the higher-order cross-correlation matrix in the form of `SymmetricTensor{T, 2}`. Such matrix is the contraction of the corresponding higher-order cumulant tensor `c::SymmetricTensor{T, N}`
 with itself in all modes but one.
 
 ```julia
@@ -111,10 +113,11 @@ julia> t = rand(SymmetricTensor{Float64, 3}, 4);
 julia> cum2mat(t)
 SymmetricTensor{Float64,2}(Union{Nothing, Array{Float64,2}}[[7.69432 4.9757; 4.9757 5.72935] [6.09424 4.92375; 5.05157 3.17723]; nothing [7.33094 4.93128; 4.93128 4.7921]], 2, 2, 4, true)
 
-Parallel computation is supported
 ```
 
 ## Outliers detection
+
+Let `X` be the multivariate data represented in the form of `t x n` matrix of Floats, `t` numerates the realisations, while `n` numerates the marginals.
 
 ### RX detector
 
@@ -124,9 +127,8 @@ Parallel computation is supported
 
 ```
 
-Takes data `X` in the form of matrix where first index correspond to realisations and
-second to features (marginals). Using the RX (Reed-Xiaoli) Anomaly Detection returns the array of Bool that
-correspond to outlier realisations. `α` is the sensitivity (threshold) parameter of the RX detector.
+The RX (Reed-Xiaoli) Anomaly Detection returns the array of Bool, where `true`
+corresponds to the outlier realisations while `false` corresponds to the ordinary data. The parameter `α` is the sensitivity (threshold) parameter of the RX detector.
 
 
 ```julia
@@ -159,18 +161,15 @@ julia> rxdetect(x, 0.95)
   true
 ```
 
-### The HOSVD of the `4`'th cumulant
+### The 4th order multivariate cumulant outlier detector
 
 ```julia
 
   function hosvdc4detect(X::Matrix{T}, β::Float64 = 4.1, r::Int = 3)
 
 ```
-
-
-Takes data in the form of matrix where first index correspond to realisations and
-second to features (marginals). Using the HOSVD of the `4`'th cumulant's tensor of data returns the array of `Bool` that correspond to outlier realisations. For the detector introduction see see K. Domino: 'The use of the Higher Order Singular Value Decomposition of the 4-cumulant's tensors in features selection and outlier detection', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541) (2018). The parameter `β` is the sensitivity parameter while `r` a
-number of specific directions, data are projected onto.
+The 4th order multivariate cumulant outlier detector returns the array of Bool, where `true`
+corresponds to the outlier realisations while `false` corresponds to the ordinary data. The parameter `β` is the sensitivity parameter, the parameter `r` is the number of specific directions (with high `4`th order cumulant) on which data are projected. See K. Domino: 'Multivariate cumulants in features selection and outlier detection for financial data analysis', [arXiv:1804.00541] (https://arxiv.org/abs/1804.00541). 
 
 ```julia
 
@@ -204,15 +203,15 @@ julia> rxdetect(x, 0.95)
 ```
 ## Data generation and tests
 
-In folder `test\outliers_detect` and `test\features_select` there are Julia executable files testing selection and detection algorithms on artificial data.
+In folder `test\outliers_detect` and `test\features_select` there are the Julia executable files for testing features selection and outliers detection on artificial data.
 
 ### Features selection
 
- The executable file `gendat4selection.jl` generates multivariate data with non-Gaussian subset of marginals modelled by the t-Student copula. This file is parametrised by an integer being a number of degrees of freedom of the t-Student copula. Returns a `.jld2` file with data. Run `jkfs_selection.jl` to achieve results of features selection given different methods.
+The executable file `gendat4selection.jl` generates multivariate data with non-Gaussian subset of marginals modelled by the t-Student copula. This file is parametrised by an integer being a number of degrees of freedom of the t-Student copula. Returns a `.jld2` file with data. Run `jkfs_selection.jl` to achieve results of features selection given different methods.
 
 ### Outlier detection
 
- The executable file `gendat4detection.jl` generates multivariate data with non-Gaussian outliers subset of realisations modeled by the t-Student copula.
+The executable file `gendat4detection.jl` generates multivariate data with non-Gaussian outliers subset of realisations modeled by the t-Student copula.
  This file is parametrised by an integer being a number of degrees of freedom of the t-Student copula. Returns a `.jld2` file with data. Run `detect_outliers.jl` to detect outliers and compare the "HOSVD" based method with the "RX" detector.
 
 # Citing this work
