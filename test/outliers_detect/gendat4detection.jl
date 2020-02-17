@@ -47,10 +47,17 @@ function main(args)
     default = 6
     help = "the number of degrees of freedom for the t-Student marginal"
     arg_type = Int
+
+    "--realisations", "-N"
+    default = 5
+    help = "number of tests realisations"
+    arg_type = Int
   end
   parsed_args = parse_args(s)
   ν = parsed_args["nu"]
   νu = parsed_args["nuu"]
+  # number of generated data sets
+  test_number = parsed_args["realisations"]
 
   println("copula's degreen of freedom = ", ν)
   println("matginal's degree of freedom = ", νu)
@@ -63,8 +70,7 @@ function main(args)
   # outliers places on the beginning of data
   @everywhere a = 100
   data_dir = "."
-  # number of generated data sets
-  test_number = 5
+
   filename = "tstudent_$(ν)_marg$(νu)-t_size-$(n)_malfsize-$malf_size-t_$(t)_$a.jld2"
 
   data = Dict{String, Any}("variables_no" => n,
@@ -77,13 +83,12 @@ function main(args)
 
 
   known_data_size = 0
-  if isfile("$data_dir/$filename")
-   data["data"] = load("$data_dir/$filename")["data"]
+  if isfile("./$filename")
+   data["data"] = load("./$filename")["data"]
    known_data_size += length(data["data"])
    println("Already have $known_data_size samples \n Will generate $(test_number-known_data_size) more")
   end
 
-  #true calculations
   println("Calculation started")
   for m=(known_data_size+1):test_number
     @time begin
@@ -93,11 +98,8 @@ function main(args)
       samples_orig = rand(MvNormal(Σ), t)'
 
       # gcop2tstudent(x[1:a, :], malf, ν) - outliers, given gaussian multivariate copula is changed for Gaussian
-
       # x[a+1:end, :] - ordinary data
-
       # gmarg2t( ..., νu) - univariate marginals are changed to t-Student
-
       # "malf" - dict key
 
       versions = [(x->gmarg2t(vcat(gcop2tstudent(x[1:a, :], malf, ν), x[a+1:end, :]), νu), "malf")]
@@ -114,10 +116,9 @@ function main(args)
       end
 
       data["data"]["$m"] = merge(cur_dict, data_dict)
-      save("$data_dir/$filename", data)
+      save("./$filename", data)
     end
   end
-
 end
 
 main(ARGS)
