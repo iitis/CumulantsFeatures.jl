@@ -214,7 +214,7 @@ The `gendat4selection.jl` returns a `.jld2` file with data. Run `jkfs_selection.
 
 ### Outlier detection
 
-In `./test/outliers_detect/` the executable file `gendat4detection.jl` generates multivariate data with outliers modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `6`). All univariate marginal distributions are t-Student with `-nuu` degrees of freedom (by defalt `6`).
+In `./test/outliers_detect/` the executable file `gendat4detection.jl` generates multivariate data with outliers modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `6`). All univariate marginal distributions are t-Student with `--nuu` degrees of freedom (by defalt `6`). The number of test realisations is `--reals` (by default `5`).
 
 The `gendat4detection.jl` returns a `.jld2` file with data. Run `detect_outliers.jl` on this file to display the characteristics of outlier detection plotted in `./test/outliers_detect/pics/'
 `
