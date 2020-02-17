@@ -48,7 +48,7 @@ function main(args)
     help = "the number of degrees of freedom for the t-Student marginal"
     arg_type = Int
 
-    "--realisations", "-N"
+    "--reals", "-N"
     default = 5
     help = "number of tests realisations"
     arg_type = Int
@@ -57,7 +57,7 @@ function main(args)
   ν = parsed_args["nu"]
   νu = parsed_args["nuu"]
   # number of generated data sets
-  test_number = parsed_args["realisations"]
+  test_number = parsed_args["reals"]
 
   println("copula's degreen of freedom = ", ν)
   println("matginal's degree of freedom = ", νu)
