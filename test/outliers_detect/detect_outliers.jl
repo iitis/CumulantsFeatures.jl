@@ -86,7 +86,7 @@ are projected) returns a vector of hosvd detection:
 function detection_hosvd(data::Dict, β::Float64, r::Int = 3)
   no_cases = length(data["data"])
   ret = zeros(no_cases, 2)
-  println("hosvd detector")
+  println("4th cumulant detector")
   for c=1:no_cases
     println("case no = ", c)
     detected = hosvdc4detect(data["data"]["$c"]["x_malf"], β, r)
@@ -170,7 +170,7 @@ function plotdet(hosvd, rx, rand, nu::Int = 6)
     xrand = [k[i,2] for k in rand]
     yrand = [k[i,1] for k in rand]
 
-    plt[:plot](xh, yh, "o-", label = "hosvd", color = "blue")
+    plt[:plot](xh, yh, "o-", label = "4th cumulant", color = "blue")
     plt[:plot](xrx, yrx, "d-", label = "RX", color = "red")
     plt[:plot](xrand, yrand, "x-", label = "random", color = "gray")
     ax[:legend](fontsize = 6., loc = 2, ncol = 2)
