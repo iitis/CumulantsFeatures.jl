@@ -5,6 +5,8 @@
   @test rxdetect(x, 0.9) == [false, false, false, false, false, false, false, false, false, true]
   @test hosvdc4detect(x, 4., 2; b=2) == [false, false, false, false, false, false, false, false, true, true]
   @test hosvdc4detect(x1, 3.9, 1; b=1) == vcat(fill(false, 20), [true, true])
+  x2 = [[0. 0.]; [1. 2.]; [1. 1.]]
+  @test hosvdc4detect(x2, .1, 2; b=2) == [false, false, false]
   @test rxdetect(x1, 0.9) == vcat(fill(false, 20), [true, true])
   ls = fill(true, 10)
   ls1 = [true, true, true, true, true, true, true, true, false, false]
