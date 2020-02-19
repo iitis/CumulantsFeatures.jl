@@ -11,11 +11,10 @@ using Cumulants
 addprocs(3)
 @everywhere using CumulantsFeatures
 @everywhere using Cumulants
-#using StatsBase
-#using ROCAnalysis
 using PyCall
-@pyimport matplotlib as mpl
-@pyimport matplotlib.colors as mc
+
+mpl = pyimport("matplotlib")
+mc = pyimport("matplotlib.colors")
 mpl.rc("text", usetex=true)
 mpl.use("Agg")
 using PyPlot
@@ -170,10 +169,10 @@ function plotdet(hosvd, rx, rand, nu::Int = 6)
     xrand = [k[i,2] for k in rand]
     yrand = [k[i,1] for k in rand]
 
-    plt[:plot](xh, yh, "o-", label = "4th cumulant", color = "blue")
-    plt[:plot](xrx, yrx, "d-", label = "RX", color = "red")
-    plt[:plot](xrand, yrand, "x-", label = "random", color = "gray")
-    ax[:legend](fontsize = 6., loc = 2, ncol = 2)
+    plt.plot(xh, yh, "o-", label = "4th cumulant", color = "blue")
+    plt.plot(xrx, yrx, "d-", label = "RX", color = "red")
+    plt.plot(xrand, yrand, "x-", label = "random", color = "gray")
+    ax.legend(fontsize = 6., loc = 2, ncol = 2)
     subplots_adjust(left = 0.15, bottom = 0.16)
     show()
     xlabel("False Positive Rate (type 1 error rate)", labelpad = -1.0)

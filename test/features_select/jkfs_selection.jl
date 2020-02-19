@@ -5,8 +5,8 @@ using FileIO
 using ArgParse
 using PyCall
 using SymmetricTensors
-@pyimport matplotlib as mpl
-@pyimport matplotlib.colors as mc
+mpl = pyimport("matplotlib")
+mc = pyimport("matplotlib.colors")
 mpl.rc("text", usetex=true)
 mpl.use("Agg")
 using PyPlot
@@ -79,7 +79,7 @@ function plotdata(plot_data, data_parts_label, ν, malf_size, var_number, repeat
   data_y = los(var_number, malf_size, malf_size+δ)[1]
   plot(data_x, data_y, "--x", label="rand choice", color = "black", linewidth = 1., markersize = 3.)
   if true
-    ax[:legend](fontsize = 4.5, loc = 2, ncol = 2)
+    ax.legend(fontsize = 4.5, loc = 2, ncol = 2)
   end
   subplots_adjust(left = 0.15, bottom = 0.16)
   show()
