@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/iitis/CumulantsFeatures.jl.svg?branch=master)](https://travis-ci.org/iitis/CumulantsFeatures.jl)
 [![Coverage Status](https://coveralls.io/repos/github/iitis/CumulantsFeatures.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/CumulantsFeatures.jl?branch=master)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3454453.svg)](https://doi.org/10.5281/zenodo.3454453)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3676928.svg)](https://doi.org/10.5281/zenodo.3676928)
 
 CumulantsFeatures.jl uses multivariate cumulants to provide the algorithms for the outliers detection and the features selection given the multivariate data represented in the form of `t x n` matrix of Floats, `t` numerates the realisations, while `n` numerates the marginals.
 
