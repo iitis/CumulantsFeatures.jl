@@ -82,7 +82,6 @@ function plotdata(plot_data, data_parts_label, ν, malf_size, var_number, repeat
     ax.legend(fontsize = 4.5, loc = 2, ncol = 2)
   end
   subplots_adjust(left = 0.15, bottom = 0.16)
-  show()
   xlabel("no. selected features", labelpad = 0.)
   ylabel("selection probability", labelpad = 0.)
   savefig("$(ν)_$(δ)jkfs.pdf")
@@ -90,7 +89,7 @@ end
 
 function main(args)
   s = ArgParseSettings("description")
-  @add_arg_table s begin
+  @add_arg_table! s begin
     "file"
     help = "the file name"
     arg_type = String

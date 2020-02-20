@@ -37,7 +37,7 @@ end
 
 function main(args)
   s = ArgParseSettings("description")
-  @add_arg_table s begin
+  @add_arg_table! s begin
     "--nu", "-n"
     default = 6
     help = "the number of degrees of freedom for the t-Student copula"

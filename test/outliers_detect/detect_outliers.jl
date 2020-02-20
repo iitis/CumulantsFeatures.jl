@@ -174,7 +174,6 @@ function plotdet(hosvd, rx, rand, nu::Int = 6)
     plt.plot(xrand, yrand, "x-", label = "random", color = "gray")
     ax.legend(fontsize = 6., loc = 2, ncol = 2)
     subplots_adjust(left = 0.15, bottom = 0.16)
-    show()
     xlabel("False Positive Rate (type 1 error rate)", labelpad = -1.0)
     ylabel("True Positive Rate", labelpad = 0.)
     savefig("./pics/$(nu)_$(i)detect.pdf")
@@ -185,7 +184,7 @@ end
 
 function main(args)
   s = ArgParseSettings("description")
-  @add_arg_table s begin
+  @add_arg_table! s begin
     "file"
     help = "the file name"
     arg_type = String
