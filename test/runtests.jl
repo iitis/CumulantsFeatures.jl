@@ -5,7 +5,7 @@ using SymmetricTensors
 using Cumulants
 using CumulantsFeatures
 using Combinatorics
-using Distributed
+using Distributions
 using Random
 using CumulantsUpdates
 import CumulantsFeatures: reduceband, greedestep, unfoldsym, hosvdstep, greedesearchdata, mev, mormbased, hosvdapprox

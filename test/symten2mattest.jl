@@ -83,3 +83,19 @@ end
         @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 end
+
+
+@testset "test on Gaussian data" begin
+    Random.seed!(1234)
+    s = 0.5*(ones(4,4)+1*Matrix(I, 4, 4))
+    x = Array(rand(MvNormal(s), 1_000_000)');
+    c = cumulants(x, 5)
+    M3 = cum2mat(c[3])
+    M4 = cum2mat(c[4])
+    M5 = cum2mat(c[5])
+
+    @test norm(c[2]) ≈ 2.64 atol = 10^(-2)
+    @test norm(M3) ≈ 0. atol = 10^(-4)
+    @test norm(M4)≈ 0. atol = 10^(-3)
+    @test norm(M5)≈ 0. atol = 10^(-2)
+end
