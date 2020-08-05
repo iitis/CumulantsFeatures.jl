@@ -226,4 +226,4 @@ This project was partially financed by the National Science Centre, Poland – p
 While using `hosvdc4detect()` please cite K. Domino: 'Multivariate cumulants in outlier detection for financial data analysis', Physica A: Statistical Mechanics and its Applications Volume 558, 15 November 2020, 124995 (https://doi.org/10.1016/j.physa.2020.124995).
 
 
-While using `cumfsel()` please cite P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images' (2018) (https://arxiv.org/abs/1808.03513).
+While using `cumfsel()` please cite P. Głomb, K. Domino, M. Romaszewski, M. Cholewa, 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images', Wroclaw University of Science and Technology, Conference Proceedings: PP-RAI'2019 (2019), ISBN: 978-83-943803-2-8; [arxiv: 1808.03513] (https://arxiv.org/abs/1808.03513).
