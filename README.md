@@ -223,7 +223,7 @@ The `gendat4detection.jl` returns a `.jld2` file with data. Run `detect_outliers
 
 This project was partially financed by the National Science Centre, Poland – project number 2014/15/B/ST6/05204.
 
-While using `hosvdc4detect()` please cite K. Domino: 'Multivariate cumulants in outlier detection for financial data analysis', Physica A: Statistical Mechanics and its Applications Volume 558, 15 November 2020, 124995.
+While using `hosvdc4detect()` please cite K. Domino: 'Multivariate cumulants in outlier detection for financial data analysis', Physica A: Statistical Mechanics and its Applications Volume 558, 15 November 2020, 124995 (https://doi.org/10.1016/j.physa.2020.124995).
 
 
 While using `cumfsel()` please cite P. Głomb, K. Domino, M. Romaszewski, M. Cholewa 'Band selection with Higher Order Multivariate Cumulants for small target detection in hyperspectral images' (2018) (https://arxiv.org/abs/1808.03513).
