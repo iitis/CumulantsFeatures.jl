@@ -8,6 +8,10 @@ module CumulantsFeatures
   using SharedArrays
   using CumulantsUpdates
   #using DistributedArrays
+  if VERSION >= v"1.3"
+    using CompilerSupportLibraries_jll
+  end
+
   import SymmetricTensors: issymetric, getblock, pyramidindices
 
   include("optimizationalgorithms.jl")
