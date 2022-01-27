@@ -68,7 +68,7 @@ end
 end
 
 @testset "hosvdapprox additional tests" begin
-  Random.seed!(42)
+  Random.seed!(44)
   c3 = rand(SymmetricTensor{Float64, 3}, 5)
   Σ = rand(SymmetricTensor{Float64, 2}, 5)
   m3 = unfoldsym(c3)
