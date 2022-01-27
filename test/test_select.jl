@@ -153,6 +153,11 @@ end
   x = rand(Float32, 12,10);
   c = cumulants(x,4);
   f = cumfsel(c[2], c[4], "hosvd")
-  @test f[9][3] == 6
-  @test f[10][3] == 5
+  if VERSION <= v"1.7"
+    @test f[9][3] == 6
+    @test f[10][3] == 5
+  else
+    @test f[9][3] == 2
+    @test f[10][3] == 6
+  end
 end
