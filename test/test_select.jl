@@ -106,24 +106,46 @@ end
   end
   c = SymmetricTensor(c)
   ret = cumfsel(Σ, c, "hosvd", 5)
-  @test ret[3][1] == [true, true, false, false, false]
-  @test ret[3][2] ≈ 7.943479150509705
-  @test (x->x[3]).(ret) == [4, 5, 3, 2, 1] #from lest important to most important"
   retn = cumfsel(Σ, c, "norm", 4)
-  @test retn[3][1] == [true, true, false, false, false]
-  @test retn[3][2] ≈ 24.285620999564703
-  @test (x->x[3]).(retn) == [4, 5, 3, 2]
-  @test cumfsel(Σ, c, "mev", 5)[1][3] == 5
-  @test cumfsel(Σ, 5)[1][3] == 5
-  @test_throws AssertionError cumfsel(Σ, c, "mov", 5)
-  @test_throws AssertionError cumfsel(Σ, c, "hosvd", 7)
+
+  if VERSION <= v"1.7"
+    @test ret[3][1] == [true, true, false, false, false]
+    @test ret[3][2] ≈ 7.943479150509705
+    @test (x->x[3]).(ret) == [4, 5, 3, 2, 1] #from lest important to most important"
+
+    @test retn[3][1] == [true, true, false, false, false]
+    @test retn[3][2] ≈ 24.285620999564703
+    @test (x->x[3]).(retn) == [4, 5, 3, 2]
+    @test cumfsel(Σ, c, "mev", 5)[1][3] == 5
+    @test cumfsel(Σ, 5)[1][3] == 5
+    @test_throws AssertionError cumfsel(Σ, c, "mov", 5)
+    @test_throws AssertionError cumfsel(Σ, c, "hosvd", 7)
+  else
+    @test ret[3][1] == [false, true, true, false, false]
+    @test ret[3][2] ≈ 10.943399558215603
+    @test (x->x[3]).(ret) == [4, 5, 1, 3, 2] #from lest important to most important"
+
+    @test retn[3][1] == [true, false, true, false, false]
+    @test retn[3][2] ≈ 46.617412130431866
+    @test (x->x[3]).(retn) == [4, 5, 2, 3]
+    @test cumfsel(Σ, c, "mev", 5)[1][3] == 5
+    @test cumfsel(Σ, 5)[1][3] == 5
+    @test_throws AssertionError cumfsel(Σ, c, "mov", 5)
+    @test_throws AssertionError cumfsel(Σ, c, "hosvd", 7)
+  end
   Random.seed!(42)
   x = rand(12,10);
   c = cumulants(x,4);
   f = cumfsel(c[2], c[4], "hosvd")
-  @test f[9][1] == [false, false, false, false, false, false, true, false, false, false]
-  @test f[9][3] == 9
-  @test f[10][3] == 7
+  if VERSION <= v"1.7"
+    @test f[9][1] == [false, false, false, false, false, false, true, false, false, false]
+    @test f[9][3] == 9
+    @test f[10][3] == 7
+  else
+    @test f[9][1] == [false, false, false, false, false, false, false, false, true, false]
+    @test f[9][3] == 6
+    @test f[10][3] == 9
+  end
 end
 
 @testset "cumfsel tests on Float32" begin
