@@ -24,12 +24,12 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 julia = "1"
-Combinatorics = "0.7, 1"
-Distributions = "0.24, 0.25"
+Combinatorics = "1"
+Distributions = "0.25"
 SymmetricTensors = "1"
 Cumulants = "1"
 CumulantsUpdates = "1"
-StatsBase = "0.32, 0.33"
+StatsBase = "0.33"
 
 [targets]
 test = ["ArgParse", "PyCall", "PyPlot", "Test"]
