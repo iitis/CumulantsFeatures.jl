@@ -24,7 +24,7 @@ testf(a,b,bool)= det(a[bool,bool])
       @test g[3] == 2
       @test g[2] ≈ 0.48918301293211774
     else
-      @test g[1] == [true, true, true]
+      @test g[1] == [true, true, false]
       @test g[3] == 3
       @test g[2] ≈ 0.09764869605558585
     end
