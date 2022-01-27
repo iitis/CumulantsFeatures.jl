@@ -79,22 +79,12 @@ end
     @testset "m = 5, n = 24, d = 4" begin
         Random.seed!(42)
         t = rand(SymmetricTensor{Float64, 5}, 24, 4)
-        println("cum2mat time = ")
-        @time s = cum2mat(t)
-        print("naive time = ")
-        @time begin X = unfold(Array(t), 1)
-        M = X*transpose(X)
-        end
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
-    end
-
-    @testset "m = 5, n = 40, d = 5" begin
-        t = rand(SymmetricTensor{Float64, 5}, 40, 5)
         s = cum2mat(t)
         X = unfold(Array(t), 1)
         M = X*transpose(X)
         @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
+
 
     @testset "m = 5, n = 37, d = 6" begin
         t = rand(SymmetricTensor{Float64, 5}, 37, 6)
@@ -104,35 +94,4 @@ end
         @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
     end
 
-    @testset "m = 5, n = 26, d = 5" begin
-        t = rand(SymmetricTensor{Float64, 5}, 26, 5)
-        s = cum2mat(t)
-        X = unfold(Array(t), 1)
-        M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
-    end
-
-    @testset "m = 5, n = 25, d = 5" begin
-        t = rand(SymmetricTensor{Float64, 5}, 25, 5)
-        s = cum2mat(t)
-        X = unfold(Array(t), 1)
-        M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
-    end
-
-    @testset "m = 5, n = 29, d = 3" begin
-        t = rand(SymmetricTensor{Float64, 5}, 29, 3)
-        s = cum2mat(t)
-        X = unfold(Array(t), 1)
-        M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
-    end
-
-    @testset "m = 4, n = 12, d = 3" begin
-        t = rand(SymmetricTensor{Float64, 4}, 12, 3)
-        s = cum2mat(t)
-        X = unfold(Array(t), 1)
-        M = X*transpose(X)
-        @test maximum(abs.(M - Array(s))) ≈ 0 atol = 10^(-8)
-    end
 end
