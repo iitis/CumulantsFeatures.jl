@@ -100,6 +100,6 @@ end
 
     @test norm(c[2]) ≈ 2.64 atol = 10^(-2)
     @test norm(M3) ≈ 0. atol = 10^(-4)
-    @test norm(M4)≈ 0. atol = 10^(-3)
-    @test norm(M5)≈ 0. atol = 10^(-2)
+    @test norm(M4)≈ 0. atol = 3*10^(-3)
+    @test norm(M5)≈ 0. atol = 3*10^(-2)
 end
