@@ -201,20 +201,20 @@ julia> rxdetect(x, 0.95)
 ```
 ## Tests on artificial data.
 
-In folder `test\outliers_detect` and `test\features_select` there are the Julia executable files for testing features selection and outliers detection on artificial data.
+In folder `benchmarks/outliers_detect` and `benchmarks/features_select` there are the Julia executable files for testing features selection and outliers detection on artificial data.
 
 ### Features selection
 
-In `./test/features_select` the executable file `gendat4selection.jl` generates multivariate data where the subset of `infomrative` margianls is modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `4`). All univariate marginal distributions are t-Student with `-nuu` degrees of freedom (by defalt `25`).
+In `./benchmarks/features_select` the executable file `gendat4selection.jl` generates multivariate data where the subset of `infomrative` margianls is modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `4`). All univariate marginal distributions are t-Student with `-nuu` degrees of freedom (by defalt `25`).
 
 
-The `gendat4selection.jl` returns a `.jld2` file with data. Run `jkfs_selection.jl` on this file to display the characteristics of features selection plotted in `./test/features_select/pics/`
+The `gendat4selection.jl` returns a `.jld2` file with data. Run `jkfs_selection.jl` on this file to display the characteristics of features selection plotted in `./benchmarks/features_select/pics/`
 
 ### Outlier detection
 
-In `./test/outliers_detect/` the executable file `gendat4detection.jl` generates multivariate data with outliers modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `6`). All univariate marginal distributions are t-Student with `--nuu` degrees of freedom (by defalt `6`). The number of test realisations is `--reals` (by default `5`).
+In `./benchmarks/outliers_detect/` the executable file `gendat4detection.jl` generates multivariate data with outliers modelled by the t-Student copula with `--nu` degrees of freedom (by defalt `6`). All univariate marginal distributions are t-Student with `--nuu` degrees of freedom (by defalt `6`). The number of test realisations is `--reals` (by default `5`).
 
-The `gendat4detection.jl` returns a `.jld2` file with data. Run `detect_outliers.jl` on this file to display the characteristics of outlier detection plotted in `./test/outliers_detect/pics/'
+The `gendat4detection.jl` returns a `.jld2` file with data. Run `detect_outliers.jl` on this file to display the characteristics of outlier detection plotted in `./benchmarks/outliers_detect/pics/'
 `
 
 # Citing this work
