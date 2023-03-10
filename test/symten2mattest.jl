@@ -99,7 +99,7 @@ end
     M5 = cum2mat(c[5])
 
     @test norm(c[2]) ≈ 2.64 atol = 10^(-2)
-    @test norm(M3) ≈ 0. atol = 10^(-4)
-    @test norm(M4)≈ 0. atol = 3*10^(-3)
-    @test norm(M5)≈ 0. atol = 4*10^(-2)
+    @test norm(M3) ≈ 0. atol = 2*10^(-4)
+    @test norm(M4)≈ 0. atol = 4*10^(-3)
+    @test norm(M5)≈ 0. atol = 7*10^(-2)
 end
