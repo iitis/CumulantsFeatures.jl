@@ -17,9 +17,6 @@ CumulantsUpdates = "d4707d7b-0fe1-5399-a86f-c75188857573"
 CompilerSupportLibraries_jll = "e66e0078-7015-5450-92f7-15fbd957f2ae"
 
 [extras]
-ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
-PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
-PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
@@ -32,4 +29,4 @@ CumulantsUpdates = "1"
 StatsBase = "0.33, 0.34"
 
 [targets]
-test = ["ArgParse", "PyCall", "PyPlot", "Test"]
+test = ["Test"]
