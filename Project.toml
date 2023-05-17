@@ -29,7 +29,7 @@ Distributions = "0.25"
 SymmetricTensors = "1"
 Cumulants = "1"
 CumulantsUpdates = "1"
-StatsBase = "0.33"
+StatsBase = "0.33, 0.34"
 
 [targets]
 test = ["ArgParse", "PyCall", "PyPlot", "Test"]
